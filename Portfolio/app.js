@@ -481,18 +481,14 @@ class DevOpsParticleSystem {
           memoryElement.textContent = deviceMemory ? `${deviceMemory} GB` : 'N/A';
         }
         
-        // Network Speed
-        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        const networkSpeed = connection?.downlink || null;
-        const networkElement = document.getElementById('networkSpeed');
-        if (networkElement) {
-          networkElement.textContent = networkSpeed ? `${networkSpeed} Mbps` : 'N/A';
-        }
-        
-        console.log('System info updated:', {
-          cpuCores,
-          deviceMemory,
-          networkSpeed: connection?.downlink
+        // Device IP
+        fetch('https://api.ipify.org/?format=json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("deviceIP").textContent = data.ip;
+        })
+        .catch(() => {
+            document.getElementById("deviceIP").textContent = 'Unavailable';
         });
         
       } catch (error) {
