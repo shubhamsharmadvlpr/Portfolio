@@ -406,7 +406,7 @@ class DevOpsParticleSystem {
         return;
       }
       
-      // console.log('Initializing resource usage widget...');
+      console.log('Initializing resource usage widget...');
       this.setupEventListeners();
       this.updateSystemInfo();
       this.startUpdating();
@@ -434,23 +434,23 @@ class DevOpsParticleSystem {
         this.checkMobileVisibility();
       });
       
-      // console.log('Resource widget event listeners setup complete');
+      console.log('Resource widget event listeners setup complete');
     }
     
     checkMobileVisibility() {
       if (window.innerWidth <= 400) {
         this.widget.style.display = 'none';
-        // console.log('Resource widget hidden on mobile');
+        console.log('Resource widget hidden on mobile');
       } else {
         this.widget.style.display = 'block';
-        // console.log('Resource widget visible on desktop');
+        console.log('Resource widget visible on desktop');
       }
     }
     
     toggleWidget() {
       this.isCollapsed = !this.isCollapsed;
       
-      // console.log(`Toggling resource widget: ${this.isCollapsed ? 'collapsing' : 'expanding'}`);
+      console.log(`Toggling resource widget: ${this.isCollapsed ? 'collapsing' : 'expanding'}`);
       
       if (this.isCollapsed) {
         this.content.classList.add('collapsed');
@@ -462,7 +462,7 @@ class DevOpsParticleSystem {
         this.toggle.textContent = '▼';
       }
       
-      // console.log(`Resource widget ${this.isCollapsed ? 'collapsed' : 'expanded'}`);
+      console.log(`Resource widget ${this.isCollapsed ? 'collapsed' : 'expanded'}`);
     }
     
     updateSystemInfo() {
@@ -536,7 +536,7 @@ class DevOpsParticleSystem {
         this.updateLoad();
       }, 800);
       
-      // console.log('Resource widget update intervals started');
+      console.log('Resource widget update intervals started');
     }
     
     animateWidget() {
@@ -589,7 +589,7 @@ class DevOpsParticleSystem {
     }
     
     init() {
-      // console.log('Initializing Spotify background...');
+      console.log('Initializing Spotify background...');
       this.setupNowPlayingAnimation();
       this.setupPlaylistHovers();
       this.startProgressAnimation();
@@ -601,7 +601,7 @@ class DevOpsParticleSystem {
       const nowPlayingCover = document.querySelector('.now-playing-cover');
       if (nowPlayingCover) {
         // Already animated via CSS
-        // console.log('Now playing cover animation active');
+        console.log('Now playing cover animation active');
       }
       
       // Setup play/pause button
@@ -870,7 +870,7 @@ class DevOpsParticleSystem {
     }, 500);
     
     // Console welcome message
-    // console.log(`
+    console.log(`
       ╔══════════════════════════════════════╗
       ║     DevOps Portfolio v3.0 Spotify   ║
       ║        Enhanced Terminal Edition     ║
@@ -892,10 +892,10 @@ class DevOpsParticleSystem {
     if ('performance' in window) {
       window.addEventListener('load', () => {
         const loadTime = performance.now();
-        // console.log(`🚀 Portfolio loaded in ${Math.round(loadTime)}ms`);
+        console.log(`🚀 Portfolio loaded in ${Math.round(loadTime)}ms`);
         
         // Log system capabilities
-        // console.log('💻 System Info:', {
+        console.log('💻 System Info:', {
           cores: navigator.hardwareConcurrency || 'Unknown',
           memory: navigator.deviceMemory ? `${navigator.deviceMemory}GB` : 'Unknown',
           connection: navigator.connection?.effectiveType || 'Unknown',
