@@ -1028,7 +1028,7 @@ body {
   font-size: var(--font-size-4xl);
   color: var(--color-neon-blue);
   margin-bottom: var(--space-8);
-  text-shadow: 0 0 10px var(--color-neon-blue);
+  text-shadow: 0 0 5px var(--color-neon-blue);
 }
 
 .hero-title {
@@ -1463,7 +1463,7 @@ section {
   font-weight: 700;
   color: var(--color-neon-green);
   margin-bottom: var(--space-16);
-  text-shadow: 0 0 10px var(--color-neon-green);
+  text-shadow: 0 0 5px var(--color-neon-green);
 }
 
 .achievement-label {
