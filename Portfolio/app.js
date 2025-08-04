@@ -97,9 +97,33 @@ class DevOpsParticleSystem {
       this.setupEventListeners();
       this.createInitialParticles();
       this.startParticleGeneration();
+      this.setupNavigationToggle();
       this.animate();
     }
-    
+        // New method to set up the navigation toggle
+    setupNavigationToggle() {
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active'); // Optional: for toggle animation
+                console.log("Toggle clicked! Menu active state:", navMenu.classList.contains('active'));
+            });
+
+            // Optional: Close the menu when a nav link is clicked
+            const navLinks = navMenu.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    navToggle.classList.remove('active');
+                });
+            });
+        } else {
+            console.error("Error: navToggle or navMenu element not found for navigation setup!");
+        }
+    }
     setupEventListeners() {
       document.addEventListener('mousemove', (e) => {
         this.mouseX = e.clientX;
@@ -905,3 +929,9 @@ class DevOpsParticleSystem {
       });
     }
   });
+
+// Ensure the DOM is fully loaded before instantiating your class
+document.addEventListener('DOMContentLoaded', function() {
+    const myDevOpsSystem = new DevOpsParticleSystem();
+    myDevOpsSystem.init(); // Call the init method after creating an instance
+});
