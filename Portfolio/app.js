@@ -93,7 +93,7 @@ class DevOpsParticleSystem {
         return;
       }
       
-      console.log('Initializing particle system...');
+      // console.log('Initializing particle system...');
       this.setupEventListeners();
       this.createInitialParticles();
       this.startParticleGeneration();
@@ -119,7 +119,7 @@ class DevOpsParticleSystem {
     
     createInitialParticles() {
       const initialCount = this.getParticleCount();
-      console.log(`Creating ${initialCount} initial particles`);
+      // console.log(`Creating ${initialCount} initial particles`);
       
       for (let i = 0; i < initialCount; i++) {
         setTimeout(() => {
@@ -186,7 +186,7 @@ class DevOpsParticleSystem {
       this.container.appendChild(particle);
       this.particles.push(particle);
       
-      // console.log(`Created particle: ${tool.name} at (${startX}, ${startY})`);
+      // // console.log(`Created particle: ${tool.name} at (${startX}, ${startY})`);
       return particle;
     }
     
@@ -207,7 +207,7 @@ class DevOpsParticleSystem {
           // Show tooltip
           this.showTooltip(particle, data.tool.name);
           
-          console.log(`Hovering ${data.tool.name}`);
+          // console.log(`Hovering ${data.tool.name}`);
         }
       });
       
@@ -333,7 +333,7 @@ class DevOpsParticleSystem {
         if (data.x > window.innerWidth + 100) {
           particle.remove();
           this.particles.splice(i, 1);
-          console.log(`Removed off-screen particle: ${data.tool.name}`);
+          // console.log(`Removed off-screen particle: ${data.tool.name}`);
         }
       }
     }
@@ -406,7 +406,7 @@ class DevOpsParticleSystem {
         return;
       }
       
-      console.log('Initializing resource usage widget...');
+      // console.log('Initializing resource usage widget...');
       this.setupEventListeners();
       this.updateSystemInfo();
       this.startUpdating();
@@ -434,23 +434,23 @@ class DevOpsParticleSystem {
         this.checkMobileVisibility();
       });
       
-      console.log('Resource widget event listeners setup complete');
+      // console.log('Resource widget event listeners setup complete');
     }
     
     checkMobileVisibility() {
       if (window.innerWidth <= 400) {
         this.widget.style.display = 'none';
-        console.log('Resource widget hidden on mobile');
+        // console.log('Resource widget hidden on mobile');
       } else {
         this.widget.style.display = 'block';
-        console.log('Resource widget visible on desktop');
+        // console.log('Resource widget visible on desktop');
       }
     }
     
     toggleWidget() {
       this.isCollapsed = !this.isCollapsed;
       
-      console.log(`Toggling resource widget: ${this.isCollapsed ? 'collapsing' : 'expanding'}`);
+      // console.log(`Toggling resource widget: ${this.isCollapsed ? 'collapsing' : 'expanding'}`);
       
       if (this.isCollapsed) {
         this.content.classList.add('collapsed');
@@ -462,7 +462,7 @@ class DevOpsParticleSystem {
         this.toggle.textContent = '▼';
       }
       
-      console.log(`Resource widget ${this.isCollapsed ? 'collapsed' : 'expanded'}`);
+      // console.log(`Resource widget ${this.isCollapsed ? 'collapsed' : 'expanded'}`);
     }
     
     updateSystemInfo() {
@@ -536,7 +536,7 @@ class DevOpsParticleSystem {
         this.updateLoad();
       }, 800);
       
-      console.log('Resource widget update intervals started');
+      // console.log('Resource widget update intervals started');
     }
     
     animateWidget() {
@@ -589,7 +589,7 @@ class DevOpsParticleSystem {
     }
     
     init() {
-      console.log('Initializing Spotify background...');
+      // console.log('Initializing Spotify background...');
       this.setupNowPlayingAnimation();
       this.setupPlaylistHovers();
       this.startProgressAnimation();
@@ -601,7 +601,7 @@ class DevOpsParticleSystem {
       const nowPlayingCover = document.querySelector('.now-playing-cover');
       if (nowPlayingCover) {
         // Already animated via CSS
-        console.log('Now playing cover animation active');
+        // console.log('Now playing cover animation active');
       }
       
       // Setup play/pause button
@@ -618,7 +618,7 @@ class DevOpsParticleSystem {
             cover.style.animationPlayState = this.isPlaying ? 'running' : 'paused';
           }
           
-          console.log(`Music ${this.isPlaying ? 'playing' : 'paused'}`);
+          // console.log(`Music ${this.isPlaying ? 'playing' : 'paused'}`);
         });
       }
       
@@ -658,7 +658,7 @@ class DevOpsParticleSystem {
         card.addEventListener('click', () => {
           const playlistName = card.querySelector('.playlist-name')?.textContent || 
                               card.querySelector('h4')?.textContent || 'Unknown Playlist';
-          console.log(`Playing playlist: ${playlistName}`);
+          // console.log(`Playing playlist: ${playlistName}`);
           this.updateTrackInfo(playlistName, 'Various Artists');
           this.currentProgress = 0;
         });
@@ -716,7 +716,7 @@ class DevOpsParticleSystem {
     updateCurrentTrack() {
       const track = this.tracks[this.trackIndex];
       this.updateTrackInfo(track.name, track.artist);
-      console.log(`Now playing: ${track.name} by ${track.artist}`);
+      // console.log(`Now playing: ${track.name} by ${track.artist}`);
     }
     
     updateTrackInfo(trackName, artistName) {
@@ -736,30 +736,30 @@ class DevOpsParticleSystem {
   
   // Enhanced loading and initialization
   function initializeApplication() {
-    console.log('=== DevOps Portfolio with Spotify Integration Initializing ===');
+    // console.log('=== DevOps Portfolio with Spotify Integration Initializing ===');
     
     try {
       // Initialize particle system
-      console.log('Starting particle system...');
+      // console.log('Starting particle system...');
       const particleSystem = new DevOpsParticleSystem();
       window.particleSystem = particleSystem; // For debugging
       
       // Initialize resource usage widget
-      console.log('Starting resource widget...');
+      // console.log('Starting resource widget...');
       const resourceWidget = new ResourceUsageWidget();
       window.resourceWidget = resourceWidget; // For debugging
       
       // Initialize Spotify background
-      console.log('Starting Spotify background...');
+      // console.log('Starting Spotify background...');
       const spotifyBackground = new SpotifyBackgroundController();
       window.spotifyBackground = spotifyBackground; // For debugging
       
-      console.log('✅ All systems initialized successfully');
+      // console.log('✅ All systems initialized successfully');
       
       // Force initial particle creation
       setTimeout(() => {
         if (particleSystem.particles.length === 0) {
-          console.log('Force creating initial particles...');
+          // console.log('Force creating initial particles...');
           for (let i = 0; i < 5; i++) {
             particleSystem.createParticle(true);
           }
@@ -870,7 +870,7 @@ class DevOpsParticleSystem {
     }, 500);
     
     // Console welcome message
-    console.log(`
+    // console.log(`
       ╔══════════════════════════════════════╗
       ║     DevOps Portfolio v3.0 Spotify   ║
       ║        Enhanced Terminal Edition     ║
@@ -892,10 +892,10 @@ class DevOpsParticleSystem {
     if ('performance' in window) {
       window.addEventListener('load', () => {
         const loadTime = performance.now();
-        console.log(`🚀 Portfolio loaded in ${Math.round(loadTime)}ms`);
+        // console.log(`🚀 Portfolio loaded in ${Math.round(loadTime)}ms`);
         
         // Log system capabilities
-        console.log('💻 System Info:', {
+        // console.log('💻 System Info:', {
           cores: navigator.hardwareConcurrency || 'Unknown',
           memory: navigator.deviceMemory ? `${navigator.deviceMemory}GB` : 'Unknown',
           connection: navigator.connection?.effectiveType || 'Unknown',
