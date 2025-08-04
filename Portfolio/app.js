@@ -186,7 +186,7 @@ class DevOpsParticleSystem {
       this.container.appendChild(particle);
       this.particles.push(particle);
       
-      console.log(`Created particle: ${tool.name} at (${startX}, ${startY})`);
+      // console.log(`Created particle: ${tool.name} at (${startX}, ${startY})`);
       return particle;
     }
     
