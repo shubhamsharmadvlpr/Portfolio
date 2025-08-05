@@ -204,7 +204,7 @@ class DevOpsParticleSystem {
       };
       
       // Add interactions
-      this.addParticleInteractions(particle);
+      // this.addParticleInteractions(particle);
       
       // Add to container
       this.container.appendChild(particle);
@@ -214,43 +214,43 @@ class DevOpsParticleSystem {
       return particle;
     }
     
-    addParticleInteractions(particle) {
-      let isHovering = false;
+    // addParticleInteractions(particle) {
+    //   let isHovering = false;
       
-      particle.addEventListener('mouseenter', (e) => {
-        e.preventDefault();
-        if (!isHovering) {
-          isHovering = true;
-          const data = particle.particleData;
+    //   particle.addEventListener('mouseenter', (e) => {
+    //     e.preventDefault();
+    //     if (!isHovering) {
+    //       isHovering = true;
+    //       const data = particle.particleData;
           
-          // Scale up effect
-          particle.style.transform = `scale(${data.size * 1.8}) rotate(${data.rotation}deg)`;
-          particle.style.filter = `drop-shadow(0 0 20px ${data.tool.color}) brightness(1.5)`;
-          particle.style.zIndex = '1000';
+    //       // Scale up effect
+    //       particle.style.transform = `scale(${data.size * 1.8}) rotate(${data.rotation}deg)`;
+    //       particle.style.filter = `drop-shadow(0 0 20px ${data.tool.color}) brightness(1.5)`;
+    //       particle.style.zIndex = '1000';
           
-          // Show tooltip
-          this.showTooltip(particle, data.tool.name);
+    //       // Show tooltip
+    //       this.showTooltip(particle, data.tool.name);
           
-          // console.log(`Hovering ${data.tool.name}`);
-        }
-      });
+    //       // console.log(`Hovering ${data.tool.name}`);
+    //     }
+    //   });
       
-      particle.addEventListener('mouseleave', (e) => {
-        e.preventDefault();
-        if (isHovering) {
-          isHovering = false;
-          const data = particle.particleData;
+    //   particle.addEventListener('mouseleave', (e) => {
+    //     e.preventDefault();
+    //     if (isHovering) {
+    //       isHovering = false;
+    //       const data = particle.particleData;
           
-          // Reset scale
-          particle.style.transform = `scale(${data.size}) rotate(${data.rotation}deg)`;
-          particle.style.filter = `drop-shadow(0 0 6px ${data.tool.color}80)`;
-          particle.style.zIndex = '15';
+    //       // Reset scale
+    //       particle.style.transform = `scale(${data.size}) rotate(${data.rotation}deg)`;
+    //       particle.style.filter = `drop-shadow(0 0 6px ${data.tool.color}80)`;
+    //       particle.style.zIndex = '15';
           
-          // Hide tooltip
-          this.hideTooltip();
-        }
-      });
-    }
+    //       // Hide tooltip
+    //       this.hideTooltip();
+    //     }
+    //   });
+    // }
     
     showTooltip(particle, text) {
       this.hideTooltip();
