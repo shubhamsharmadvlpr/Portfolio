@@ -315,7 +315,7 @@ class DevOpsParticleSystem {
     
     startParticleGeneration() {
       this.particleCreateTimer = setInterval(() => {
-        if (this.particles.length < this.getParticleCount() * 2) {
+        if (this.particles.length < this.getParticleCount()) {
           this.createParticle();
         }
       }, 2000);
