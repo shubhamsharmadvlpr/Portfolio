@@ -194,7 +194,7 @@ class EvolutionManager {
                     // Mouse repulsion - Cylinder Interaction (World Space)
                     // Calculate distance in XY plane of World Space
                     float dist = distance(worldPos.xy, uMouse.xy);
-                    float repulsion = smoothstep(3.5, 0.0, dist); 
+                    float repulsion = smoothstep(2.5, 0.0, dist); 
                     
                     // Push direction in World Space XY plane
                     vec3 dir = normalize(vec3(worldPos.x - uMouse.x, worldPos.y - uMouse.y, 0.0));
