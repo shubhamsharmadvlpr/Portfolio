@@ -28,16 +28,20 @@ class EvolutionManager {
 
         this.createParticles();
         
-        // Mouse tracking
-        this.mouse = new THREE.Vector2(0, 0);
-      document.addEventListener('mousemove', (e) => {
-            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        // Mouse tracking - Store World Position
+        this.mouse = new THREE.Vector3(9999, 9999, 9999); // Initialize far off-screen
+        this.raycaster = new THREE.Raycaster();
+        this.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0); // Plane at Z=0
+        this.mouseNdc = new THREE.Vector2(0, 0);
+
+        document.addEventListener('mousemove', (e) => {
+            this.mouseNdc.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouseNdc.y = -(e.clientY / window.innerHeight) * 2 + 1;
             
-            if (this.particleMaterial) {
-                this.particleMaterial.uniforms.uMouse.value.set(this.mouse.x, this.mouse.y);
-            }
-      });
+            // Calculate World Position on Z=0 plane
+            this.raycaster.setFromCamera(this.mouseNdc, this.camera);
+            this.raycaster.ray.intersectPlane(this.plane, this.mouse);
+        });
     }
     
     createCharTexture() {
@@ -145,7 +149,7 @@ class EvolutionManager {
             uniforms: {
                 uTime: { value: 0 },
                 uScrollProgress: { value: 0 },
-                uMouse: { value: new THREE.Vector2(0, 0) },
+                uMouse: { value: new THREE.Vector3(0, 0, 0) },
                 uColorRetro: { value: new THREE.Color('#00ff00') },
                 uColorCyber: { value: new THREE.Color('#00f3ff') },
                 uCharTexture: { value: charTexture }
@@ -153,7 +157,7 @@ class EvolutionManager {
             vertexShader: `
                 uniform float uTime;
                 uniform float uScrollProgress;
-                uniform vec2 uMouse;
+                uniform vec3 uMouse;
                 
                 attribute vec3 aInitial;
                 attribute vec3 aTarget;
@@ -176,12 +180,11 @@ class EvolutionManager {
                     pos.x += cos(uTime * 0.3 + pos.y) * 0.2;
                     
                     // Mouse repulsion
-                    // Project mouse to world (simplified)
-                    vec3 mousePos = vec3(uMouse.x * 20.0, uMouse.y * 10.0, 0.0);
-                    float dist = distance(pos, mousePos);
-                    float repulsion = smoothstep(5.0, 0.0, dist);
-                    vec3 dir = normalize(pos - mousePos);
-                    pos += dir * repulsion * 2.0;
+                    // uMouse is now in World Coordinates
+                    float dist = distance(pos, uMouse);
+                    float repulsion = smoothstep(8.0, 0.0, dist); // Increased radius slightly
+                    vec3 dir = normalize(pos - uMouse);
+                    pos += dir * repulsion * 4.0; // Stronger repulsion
                     
                     vPos = pos;
                     
@@ -307,20 +310,31 @@ class EvolutionManager {
     
     animate() {
         requestAnimationFrame(() => this.animate());
-      
+        
         if (this.particleMaterial) {
             this.particleMaterial.uniforms.uTime.value = performance.now() * 0.001;
             this.particleMaterial.uniforms.uScrollProgress.value = this.scrollProgress;
-        
+            
             // Rotation
             if (this.particles) {
                 this.particles.rotation.y = this.scrollProgress * Math.PI * 0.2 + (performance.now() * 0.0001);
-    }
+                
+                // Update Mouse Uniform (World -> Local conversion)
+                // We need to do this every frame because the object rotates
+                // The mouse world position is static (unless mouse moves), but the
+                // local position corresponding to that world point changes as the object rotates.
+                if (this.mouse) {
+                     const localMouse = this.mouse.clone();
+                     // Convert world coordinate to local coordinate system of the particles
+                     this.particles.worldToLocal(localMouse);
+                     this.particleMaterial.uniforms.uMouse.value.copy(localMouse);
+                }
+            }
         }
         
         if (this.renderer && this.scene && this.camera) {
             this.renderer.render(this.scene, this.camera);
-      }
+        }
     }
   }
   
