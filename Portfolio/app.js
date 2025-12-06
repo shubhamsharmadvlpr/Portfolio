@@ -51,28 +51,17 @@ class EvolutionManager {
         const rows = 4;
         const charSize = 128;
         
-        // DevOps & Cloud Symbols - Refined for Unique Silhouettes (No Squares/Boxes)
-        // 🐋: Docker (Whale)
-        // 🐬: MySQL (Dolphin)
-        // ☸: Kubernetes (The 7-Spoke Wheel)
-        // 🐙: ArgoCD (Octopus)
-        // 💠: Terraform (Hexagon/Structure)
-        // ⚙: Ansible/Config (Gear - Replaced Square A-button)
-        // ☁: AWS/Cloud (Cloud)
-        // 🐧: Linux (Penguin)
-        // 🔥: Prometheus (Fire)
-        // 🌀: Grafana (Swirl)
-        // 🎀: Jenkins (Bowtie - Replaced Butler/Suit)
-        // 🌿: Git (Branch)
-        // 🐍: Python (Snake)
-        // ⚓: Helm (Anchor)
-        // 🛡: Security (Shield - Replaced Box Package)
-        // ⚡: Performance/Automation (Bolt - Replaced Laptop Rect)
+        // Code & Terminal Symbols
+        // Pure programming aesthetics as requested
+        const chars = [
+            '<', '>', '{', '}', 
+            '[', ']', '(', ')', 
+            '/', '*', '+', '=', 
+            ';', '$', '!', 'x'
+        ];
         
-        const chars = ['🐋', '🐬', '☸', '🐙', '💠', '⚙', '☁', '🐧', '🔥', '🌀', '🎀', '🌿', '🐍', '⚓', '🛡', '⚡'];
-        
-        // Use system emoji fonts
-        ctx.font = '80px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+        // Use monospace font for code look
+        ctx.font = 'bold 80px "JetBrains Mono", "Courier New", "Consolas", monospace';
         ctx.fillStyle = 'white';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -499,12 +488,15 @@ class EvolutionManager {
   }
   
 // Initialize Application
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Initialize Spotify Background
     window.spotifyBackground = new SpotifyBackgroundController();
     
     // Initialize Evolution System
     window.evolutionManager = new EvolutionManager();
+    
+    // Initialize Resource Widget
+    window.resourceWidget = new ResourceUsageWidget();
     
     // Console welcome message
     console.log(`
@@ -515,7 +507,83 @@ class EvolutionManager {
       ║  🎵 Spotify Background: ACTIVE       ║
       ║  🚀 Three.js Core: INITIALIZING      ║
       ║  🔄 Evolution Mode: READY            ║
+      ║  📊 System Monitor: ONLINE           ║
       ╚══════════════════════════════════════╝
     `);
 });
+
+// Resource Usage Widget (Real System Stats)
+class ResourceUsageWidget {
+    constructor() {
+        this.widget = document.querySelector('.resource-widget');
+        this.toggleBtn = document.querySelector('.resource-toggle');
+        this.content = document.querySelector('.resource-content');
+        
+        // Elements to update
+        this.cpuValue = document.querySelector('.cpu-value');
+        this.memValue = document.querySelector('.mem-value');
+        this.ipValue = document.querySelector('.ip-value');
+        
+        this.isExpanded = true;
+        
+        this.init();
+    }
+    
+    init() {
+        if (!this.widget) return;
+        
+        // Toggle functionality
+        this.toggleBtn.addEventListener('click', () => this.toggle());
+        document.querySelector('.resource-header').addEventListener('click', () => this.toggle());
+        
+        // Fetch Stats
+        this.getHardwareStats();
+        this.fetchIP();
+    }
+    
+    getHardwareStats() {
+        // CPU Cores (Logical Processors)
+        const cores = navigator.hardwareConcurrency || 'Unknown';
+        this.cpuValue.textContent = cores !== 'Unknown' ? `${cores} Cores` : 'Unknown';
+        
+        // Total Memory (RAM)
+        // Note: deviceMemory is approximate and experimental (Chrome/Edge only)
+        // It returns values like 0.25, 0.5, 1, 2, 4, 8 (capped at 8 usually for privacy)
+        let memory = 'Unknown';
+        if (navigator.deviceMemory) {
+            memory = `${navigator.deviceMemory} GB`;
+            if (navigator.deviceMemory >= 8) {
+                memory = '8+ GB'; // Often capped at 8GB for privacy
+            }
+        }
+        this.memValue.textContent = memory;
+    }
+    
+    async fetchIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            if (this.ipValue) {
+                this.ipValue.textContent = data.ip;
+            }
+        } catch (e) {
+            console.error('Failed to fetch IP:', e);
+            if (this.ipValue) {
+                this.ipValue.textContent = 'Unavailable';
+            }
+        }
+    }
+    
+    toggle() {
+        this.isExpanded = !this.isExpanded;
+        
+        if (this.isExpanded) {
+            this.content.classList.remove('collapsed');
+            this.toggleBtn.classList.remove('collapsed');
+        } else {
+            this.content.classList.add('collapsed');
+            this.toggleBtn.classList.add('collapsed');
+        }
+    }
+}
 
