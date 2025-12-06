@@ -1,597 +1,341 @@
-// DevOps Particle System - Enhanced Implementation
-class DevOpsParticleSystem {
+// DevOps Portfolio - Evolution Edition
+// Implemented with Three.js for high performance and "Retro -> Cyber" evolution
+
+class EvolutionManager {
     constructor() {
-      this.container = document.getElementById('particleContainer');
-      this.particles = [];
-      this.mouseX = window.innerWidth / 2;
-      this.mouseY = window.innerHeight / 2;
-      this.isMouseMoving = false;
-      this.mouseTimeout = null;
-      this.animationId = null;
-      this.particleCreateTimer = null;
-      
-      // DevOps tools with inline SVG
-      this.devopsTools = [
-        { 
-          name: 'AWS', 
-          color: '#FF9900',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M6 9l6 6 6-6" stroke="#FF9900" stroke-width="2" fill="none"/>
-            <path d="M6 15l6-6 6 6" stroke="#FF9900" stroke-width="2" fill="none"/>
-          </svg>`
-        },
-        { 
-          name: 'Docker', 
-          color: '#2496ED',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <rect x="5" y="8" width="2" height="2" fill="#2496ED"/>
-            <rect x="7" y="8" width="2" height="2" fill="#2496ED"/>
-            <rect x="9" y="8" width="2" height="2" fill="#2496ED"/>
-            <rect x="11" y="8" width="2" height="2" fill="#2496ED"/>
-            <rect x="13" y="8" width="2" height="2" fill="#2496ED"/>
-            <ellipse cx="12" cy="14" rx="9" ry="4" fill="#2496ED"/>
-          </svg>`
-        },
-        { 
-          name: 'Kubernetes', 
-          color: '#326CE5',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <polygon points="12,2 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8" fill="#326CE5"/>
-            <circle cx="12" cy="12" r="3" fill="white"/>
-          </svg>`
-        },
-        { 
-          name: 'Terraform', 
-          color: '#623CE4',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <polygon points="8,6 8,18 14,15 14,9" fill="#623CE4"/>
-            <polygon points="14,9 14,15 20,12 20,6" fill="#623CE4"/>
-          </svg>`
-        },
-        { 
-          name: 'Jenkins', 
-          color: '#D33833',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" fill="#D33833"/>
-            <circle cx="12" cy="12" r="6" fill="white"/>
-            <circle cx="12" cy="12" r="2" fill="#D33833"/>
-          </svg>`
-        },
-        { 
-          name: 'Prometheus', 
-          color: '#E6522C',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L22 8.5L17 19H7L2 8.5L12 2Z" fill="#E6522C"/>
-            <circle cx="12" cy="12" r="3" fill="white"/>
-          </svg>`
-        },
-        { 
-          name: 'Git', 
-          color: '#F05032',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M21 10.5L13.5 3L10.5 6L13.5 9L10.5 12L13.5 15L21 22.5L21 10.5Z" fill="#F05032"/>
-            <path d="M3 10.5L10.5 3L13.5 6L10.5 9L13.5 12L10.5 15L3 22.5L3 10.5Z" fill="#F05032"/>
-          </svg>`
-        },
-        { 
-          name: 'Ansible', 
-          color: '#EE0000',
-          svg: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#EE0000" stroke-width="2" fill="none"/>
-            <path d="M2 12L12 17L22 12" stroke="#EE0000" stroke-width="2" fill="none"/>
-            <path d="M2 17L12 22L22 17" stroke="#EE0000" stroke-width="2" fill="none"/>
-          </svg>`
-        }
-      ];
-      
-      this.init();
-    }
-    
-    init() {
-      if (!this.container) {
-        console.error('Particle container not found');
-        return;
-      }
-      
-      // console.log('Initializing particle system...');
+        this.scrollProgress = 0;
+        this.evolutionStage = 0; // 0: Retro, 1: Modern, 2: Cyber
+        
+        // DOM Elements
+        this.root = document.documentElement;
+        
+        // Initialize Systems
+        this.initThreeJS();
       this.setupEventListeners();
-      this.createInitialParticles();
-      this.startParticleGeneration();
-      this.setupNavigationToggle();
       this.animate();
     }
-        // New method to set up the navigation toggle
-    setupNavigationToggle() {
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.getElementById('nav-menu');
 
-        if (navToggle && navMenu) {
-            navToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-                navToggle.classList.toggle('active'); // Optional: for toggle animation
-                console.log("Toggle clicked! Menu active state:", navMenu.classList.contains('active'));
-            });
+    initThreeJS() {
+        this.container = document.getElementById('canvas-container');
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.z = 30;
 
-            // Optional: Close the menu when a nav link is clicked
-            const navLinks = navMenu.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    navMenu.classList.remove('active');
-                    navToggle.classList.remove('active');
-                });
-            });
-        } else {
-            console.error("Error: navToggle or navMenu element not found for navigation setup!");
-        }
-    }
-    setupEventListeners() {
+        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.container.appendChild(this.renderer.domElement);
+
+        this.createParticles();
+        
+        // Mouse tracking
+        this.mouse = new THREE.Vector2(0, 0);
       document.addEventListener('mousemove', (e) => {
-        this.mouseX = e.clientX;
-        this.mouseY = e.clientY;
-        this.isMouseMoving = true;
-        
-        clearTimeout(this.mouseTimeout);
-        this.mouseTimeout = setTimeout(() => {
-          this.isMouseMoving = false;
-        }, 150);
-      });
-      
-      window.addEventListener('resize', () => {
-        this.handleResize();
+            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            if (this.particleMaterial) {
+                this.particleMaterial.uniforms.uMouse.value.set(this.mouse.x, this.mouse.y);
+            }
       });
     }
     
-    createInitialParticles() {
-      const initialCount = this.getParticleCount();
-      // console.log(`Creating ${initialCount} initial particles`);
-      
-      for (let i = 0; i < initialCount; i++) {
-        setTimeout(() => {
-          this.createParticle(true);
-        }, i * 200);
-      }
-    }
-    
-    getParticleCount() {
-      const width = window.innerWidth;
-      if (width < 768) return 6;
-      if (width < 1024) return 10;
-      return 14;
-    }
-    
-    createParticle(isInitial = false) {
-      const tool = this.devopsTools[Math.floor(Math.random() * this.devopsTools.length)];
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      
-      // Set SVG content
-      particle.innerHTML = tool.svg;
-      
-      // Calculate positions
-      const startY = Math.random() * (window.innerHeight - 200) + 50;
-      const startX = isInitial ? Math.random() * window.innerWidth : -60;
-      const speed = 0.8 + Math.random() * 1.2;
-      const rotationSpeed = (Math.random() - 0.5) * 3;
-      const size = 0.7 + Math.random() * 0.6;
-      const opacity = 0.7 + Math.random() * 0.3;
-      
-      // Apply styles
-      particle.style.cssText = `
-        position: absolute;
-        left: ${startX}px;
-        top: ${startY}px;
-        opacity: ${opacity};
-        transform: scale(${size});
-        pointer-events: auto;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 15;
-        filter: drop-shadow(0 0 6px ${tool.color}80);
-      `;
-      
-      // Store particle data
-      particle.particleData = {
-        x: startX,
-        y: startY,
-        speed: speed,
-        rotation: 0,
-        rotationSpeed: rotationSpeed,
-        tool: tool,
-        originalOpacity: opacity,
-        size: size,
-        baseY: startY,
-        floatOffset: Math.random() * Math.PI * 2
-      };
-      
-      // Add interactions
-      // this.addParticleInteractions(particle);
-      
-      // Add to container
-      this.container.appendChild(particle);
-      this.particles.push(particle);
-      
-      // // console.log(`Created particle: ${tool.name} at (${startX}, ${startY})`);
-      return particle;
-    }
-    
-    // addParticleInteractions(particle) {
-    //   let isHovering = false;
-      
-    //   particle.addEventListener('mouseenter', (e) => {
-    //     e.preventDefault();
-    //     if (!isHovering) {
-    //       isHovering = true;
-    //       const data = particle.particleData;
-          
-    //       // Scale up effect
-    //       particle.style.transform = `scale(${data.size * 1.8}) rotate(${data.rotation}deg)`;
-    //       particle.style.filter = `drop-shadow(0 0 20px ${data.tool.color}) brightness(1.5)`;
-    //       particle.style.zIndex = '1000';
-          
-    //       // Show tooltip
-    //       this.showTooltip(particle, data.tool.name);
-          
-    //       // console.log(`Hovering ${data.tool.name}`);
-    //     }
-    //   });
-      
-    //   particle.addEventListener('mouseleave', (e) => {
-    //     e.preventDefault();
-    //     if (isHovering) {
-    //       isHovering = false;
-    //       const data = particle.particleData;
-          
-    //       // Reset scale
-    //       particle.style.transform = `scale(${data.size}) rotate(${data.rotation}deg)`;
-    //       particle.style.filter = `drop-shadow(0 0 6px ${data.tool.color}80)`;
-    //       particle.style.zIndex = '15';
-          
-    //       // Hide tooltip
-    //       this.hideTooltip();
-    //     }
-    //   });
-    // }
-    
-    showTooltip(particle, text) {
-      this.hideTooltip();
-      
-      const tooltip = document.createElement('div');
-      tooltip.id = 'particle-tooltip';
-      tooltip.textContent = text;
-      tooltip.style.cssText = `
-        position: fixed;
-        background: rgba(0, 0, 0, 0.95);
-        color: #1DB954;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: 'Courier New', monospace;
-        font-weight: bold;
-        pointer-events: none;
-        z-index: 10000;
-        border: 1px solid rgba(29, 185, 84, 0.6);
-        backdrop-filter: blur(12px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-        text-shadow: 0 0 5px #1DB954;
-        animation: tooltipFadeIn 0.2s ease-out;
-      `;
-      
-      // Add tooltip animation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes tooltipFadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+    createCharTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        // 4x4 Grid of characters
+        const cols = 4;
+        const rows = 4;
+        const charSize = 128;
+        
+        // DevOps & Cloud Symbols - Refined for Unique Silhouettes (No Squares/Boxes)
+        // 🐋: Docker (Whale)
+        // 🐬: MySQL (Dolphin)
+        // ☸: Kubernetes (The 7-Spoke Wheel)
+        // 🐙: ArgoCD (Octopus)
+        // 💠: Terraform (Hexagon/Structure)
+        // ⚙: Ansible/Config (Gear - Replaced Square A-button)
+        // ☁: AWS/Cloud (Cloud)
+        // 🐧: Linux (Penguin)
+        // 🔥: Prometheus (Fire)
+        // 🌀: Grafana (Swirl)
+        // 🎀: Jenkins (Bowtie - Replaced Butler/Suit)
+        // 🌿: Git (Branch)
+        // 🐍: Python (Snake)
+        // ⚓: Helm (Anchor)
+        // 🛡: Security (Shield - Replaced Box Package)
+        // ⚡: Performance/Automation (Bolt - Replaced Laptop Rect)
+        
+        const chars = ['🐋', '🐬', '☸', '🐙', '💠', '⚙', '☁', '🐧', '🔥', '🌀', '🎀', '🌿', '🐍', '⚓', '🛡', '⚡'];
+        
+        // Use system emoji fonts
+        ctx.font = '80px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        for (let i = 0; i < chars.length; i++) {
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            
+            const x = col * charSize + charSize / 2;
+            const y = row * charSize + charSize / 2; 
+            
+            ctx.fillText(chars[i], x, y);
         }
-      `;
-      document.head.appendChild(style);
-      
-      document.body.appendChild(tooltip);
-      
-      // Position tooltip
-      const rect = particle.getBoundingClientRect();
-      const tooltipRect = tooltip.getBoundingClientRect();
-      
-      let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-      let top = rect.top - tooltipRect.height - 15;
-      
-      // Keep tooltip in viewport
-      if (left < 10) left = 10;
-      if (left + tooltipRect.width > window.innerWidth - 10) {
-        left = window.innerWidth - tooltipRect.width - 10;
-      }
-      if (top < 10) top = rect.bottom + 15;
-      
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.NearestFilter; // Pixelated look
+        texture.magFilter = THREE.NearestFilter;
+        return texture;
     }
-    
-    hideTooltip() {
-      const tooltip = document.getElementById('particle-tooltip');
-      if (tooltip) {
-        tooltip.remove();
-      }
-    }
-    
-    startParticleGeneration() {
-      this.particleCreateTimer = setInterval(() => {
-        if (this.particles.length < this.getParticleCount()) {
-          this.createParticle();
+
+    createParticles() {
+        const count = 5000; // Increased density
+        const geometry = new THREE.BufferGeometry();
+        
+        const positions = new Float32Array(count * 3);
+        const initials = new Float32Array(count * 3);
+        const targets = new Float32Array(count * 3);
+        const sizes = new Float32Array(count);
+        const charIndices = new Float32Array(count);
+        
+        for (let i = 0; i < count; i++) {
+            // Initial: Random spread
+            const rX = (Math.random() - 0.5) * 70; // Wider initial spread
+            const rY = (Math.random() - 0.5) * 70;
+            const rZ = (Math.random() - 0.5) * 50;
+            
+            initials[i * 3] = rX;
+            initials[i * 3 + 1] = rY;
+            initials[i * 3 + 2] = rZ;
+            
+            positions[i * 3] = rX;
+            positions[i * 3 + 1] = rY;
+            positions[i * 3 + 2] = rZ;
+      
+            // Target: Infinity Shape (Lemniscate)
+            // Parametric equation for Lemniscate of Bernoulli
+            // x = (a * cos(t)) / (1 + sin^2(t))
+            // y = (a * cos(t) * sin(t)) / (1 + sin^2(t))
+            
+            const t = Math.random() * Math.PI * 2;
+            const scale = 18; // Base scale
+            const widthFactor = 1.4; // Tuned to fit inner div
+            const denom = 1 + Math.sin(t) * Math.sin(t);
+            
+            const xBase = (scale * widthFactor * Math.cos(t)) / denom;
+            const yBase = (scale * Math.cos(t) * Math.sin(t)) / denom;
+            
+            // Add volume/thickness to the infinity loop
+            const spread = 2.5; // Slightly tighter spread for density
+            const tX = xBase + (Math.random() - 0.5) * spread;
+            const tY = yBase + (Math.random() - 0.5) * spread;
+            const tZ = (Math.random() - 0.5) * spread * 2;
+
+            targets[i * 3] = tX;
+            targets[i * 3 + 1] = tY;
+            targets[i * 3 + 2] = tZ;
+            
+            sizes[i] = Math.random();
+            charIndices[i] = Math.floor(Math.random() * 16); // 0-15 index for 16 chars
         }
-      }, 2000);
+        
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('aInitial', new THREE.BufferAttribute(initials, 3));
+        geometry.setAttribute('aTarget', new THREE.BufferAttribute(targets, 3));
+        geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute('aCharIndex', new THREE.BufferAttribute(charIndices, 1));
+        
+        const charTexture = this.createCharTexture();
+
+        this.particleMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uScrollProgress: { value: 0 },
+                uMouse: { value: new THREE.Vector2(0, 0) },
+                uColorRetro: { value: new THREE.Color('#00ff00') },
+                uColorCyber: { value: new THREE.Color('#00f3ff') },
+                uCharTexture: { value: charTexture }
+            },
+            vertexShader: `
+                uniform float uTime;
+                uniform float uScrollProgress;
+                uniform vec2 uMouse;
+                
+                attribute vec3 aInitial;
+                attribute vec3 aTarget;
+                attribute float aSize;
+                attribute float aCharIndex;
+                
+                varying vec3 vPos;
+                varying float vProgress;
+                varying float vCharIndex;
+                
+                void main() {
+                    vProgress = uScrollProgress;
+                    vCharIndex = aCharIndex;
+                    
+                    // Interpolate position
+                    vec3 pos = mix(aInitial, aTarget, smoothstep(0.2, 0.8, uScrollProgress));
+        
+                    // Noise/Float movement
+                    pos.y += sin(uTime * 0.5 + pos.x) * 0.2;
+                    pos.x += cos(uTime * 0.3 + pos.y) * 0.2;
+                    
+                    // Mouse repulsion
+                    // Project mouse to world (simplified)
+                    vec3 mousePos = vec3(uMouse.x * 20.0, uMouse.y * 10.0, 0.0);
+                    float dist = distance(pos, mousePos);
+                    float repulsion = smoothstep(5.0, 0.0, dist);
+                    vec3 dir = normalize(pos - mousePos);
+                    pos += dir * repulsion * 2.0;
+                    
+                    vPos = pos;
+                    
+                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                    gl_Position = projectionMatrix * mvPosition;
+        
+                    // Size modulation - Increased base size for text visibility
+                    float baseSize = mix(12.0, 20.0, uScrollProgress);
+                    gl_PointSize = baseSize * aSize * (30.0 / -mvPosition.z);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColorRetro;
+                uniform vec3 uColorCyber;
+                uniform float uScrollProgress;
+                uniform sampler2D uCharTexture;
+                
+                varying float vCharIndex;
+                
+                void main() {
+                    // Texture Atlas Lookup (4x4 grid)
+                    float cols = 4.0;
+                    vec2 uv = gl_PointCoord;
+                    
+                    // Index to grid position
+                    float col = mod(vCharIndex, cols);
+                    float row = floor(vCharIndex / cols);
+                    
+                    // Map UV to atlas cell
+                    // Assumes char drawn at top (row 0) corresponds to V 0.75-1.0 range if 0,0 is bottom-left
+                    // Canvas (0,0) is top-left.
+                    // Row 0 in loop (top of canvas) = top of texture = high V
+                    
+                    float uvRow = 3.0 - row; // Flip row index for GL texture coords
+                    vec2 atlasUV = (uv + vec2(col, uvRow)) / cols;
+                    
+                    vec4 texColor = texture2D(uCharTexture, atlasUV);
+                    
+                    // Alpha test based on texture
+                    if (texColor.a < 0.3) discard;
+                    
+                    // Color interpolation
+                    vec3 color = mix(uColorRetro, uColorCyber, uScrollProgress);
+                    
+                    // Add some glow to the character itself
+                    // float dist = length(gl_PointCoord - 0.5);
+                    // float glow = exp(-dist * 3.0) * uScrollProgress;
+                    // color += glow * 0.3;
+                    
+                    gl_FragColor = vec4(color, texColor.a);
+      }
+            `,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+        
+        this.particles = new THREE.Points(geometry, this.particleMaterial);
+        this.scene.add(this.particles);
     }
     
-    animate() {
-      this.updateParticles();
-      this.applyParallaxEffect();
-      this.animationId = requestAnimationFrame(() => this.animate());
+    setupEventListeners() {
+        window.addEventListener('scroll', () => this.handleScroll());
+        window.addEventListener('resize', () => this.handleResize());
     }
-    
-    updateParticles() {
-      const currentTime = Date.now() * 0.001;
-      
-      for (let i = this.particles.length - 1; i >= 0; i--) {
-        const particle = this.particles[i];
-        const data = particle.particleData;
+
+    handleScroll() {
+        const scrollY = window.scrollY;
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+        this.scrollProgress = Math.min(1, Math.max(0, scrollY / maxScroll));
         
-        if (!data) continue;
+        this.updateEvolution();
+      }
+
+    updateEvolution() {
+        // Interpolate CSS Variables based on scroll progress
+        const r = this.root;
+        const p = this.scrollProgress;
         
-        // Update position
-        data.x += data.speed;
-        data.rotation += data.rotationSpeed;
+        // Evolution Stages based on Scroll - DISABLED as per request to stop evolution step
+        // 0.0 - 0.3: Retro (Stage 0)
+        // 0.3 - 0.6: Modern (Stage 1)
+        // 0.6 - 1.0: Cyber (Stage 2)
         
-        // Floating motion
-        const floatY = data.baseY + Math.sin(currentTime + data.floatOffset) * 30;
-        data.y = floatY;
+        // Keeping site in "Cyber" mode visually by default via CSS
+        // We can still use p (scrollProgress) for particle effects in shaders
         
-        // Apply position and rotation
-        particle.style.left = data.x + 'px';
-        particle.style.top = data.y + 'px';
-        
-        // Update rotation in transform
-        const currentScale = particle.style.transform.match(/scale\(([^)]+)\)/);
-        const scale = currentScale ? currentScale[1] : data.size;
-        particle.style.transform = `scale(${scale}) rotate(${data.rotation}deg)`;
-        
-        // Remove off-screen particles
-        if (data.x > window.innerWidth + 100) {
-          particle.remove();
-          this.particles.splice(i, 1);
-          // console.log(`Removed off-screen particle: ${data.tool.name}`);
-        }
+        /* 
+        // Calculate current stage index
+        let currentStage = 0;
+        if (p >= 0.6) currentStage = 2;
+        else if (p >= 0.3) currentStage = 1;
+        else currentStage = 0;
+
+        // Only update DOM if stage changed
+        if (this.evolutionStage !== currentStage) {
+            this.evolutionStage = currentStage;
+            
+            if (currentStage === 0) {
+                document.body.classList.remove('stage-cyber', 'stage-modern');
+                document.body.classList.add('stage-retro');
+                r.style.setProperty('--theme-color', '#00ff00'); // Green
+            } else if (currentStage === 1) {
+                document.body.classList.remove('stage-retro', 'stage-cyber');
+                document.body.classList.add('stage-modern');
+                r.style.setProperty('--theme-color', '#ffffff'); // White/Clean
+          } else {
+                document.body.classList.remove('stage-retro', 'stage-modern');
+                document.body.classList.add('stage-cyber');
+                r.style.setProperty('--theme-color', '#00f3ff'); // Cyan
       }
     }
-    
-    applyParallaxEffect() {
-      if (!this.isMouseMoving) return;
-      
-      const mouseXPercent = (this.mouseX / window.innerWidth - 0.5) * 2;
-      const mouseYPercent = (this.mouseY / window.innerHeight - 0.5) * 2;
-      
-      this.particles.forEach((particle) => {
-        const data = particle.particleData;
-        if (!data) return;
-        
-        const depth = data.speed / 2;
-        const parallaxStrength = 15;
-        const offsetX = mouseXPercent * parallaxStrength * depth;
-        const offsetY = mouseYPercent * parallaxStrength * depth;
-        
-        // Apply parallax offset
-        const currentScale = particle.style.transform.match(/scale\(([^)]+)\)/)?.[1] || data.size;
-        particle.style.transform = `scale(${currentScale}) rotate(${data.rotation}deg) translate(${offsetX}px, ${offsetY}px)`;
-      });
+        */
     }
     
     handleResize() {
-      const targetCount = this.getParticleCount();
-      const currentCount = this.particles.length;
-      
-      if (currentCount > targetCount * 3) {
-        const excessCount = currentCount - targetCount;
-        for (let i = 0; i < excessCount; i++) {
-          if (this.particles.length > 0) {
-            const particle = this.particles.pop();
-            particle.remove();
-          }
+        if (this.camera && this.renderer) {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
-      }
     }
     
-    destroy() {
-      if (this.animationId) {
-        cancelAnimationFrame(this.animationId);
-      }
-      if (this.particleCreateTimer) {
-        clearInterval(this.particleCreateTimer);
-      }
-      this.particles.forEach(particle => particle.remove());
-      this.particles = [];
+    animate() {
+        requestAnimationFrame(() => this.animate());
+      
+        if (this.particleMaterial) {
+            this.particleMaterial.uniforms.uTime.value = performance.now() * 0.001;
+            this.particleMaterial.uniforms.uScrollProgress.value = this.scrollProgress;
+        
+            // Rotation
+            if (this.particles) {
+                this.particles.rotation.y = this.scrollProgress * Math.PI * 0.2 + (performance.now() * 0.0001);
     }
-  }
-  
-  // Resource Usage Widget Controller
-  class ResourceUsageWidget {
-    constructor() {
-      this.widget = document.getElementById('resourceWidget');
-      this.header = document.getElementById('resourceHeader');
-      this.toggle = document.getElementById('resourceToggle');
-      this.content = document.getElementById('resourceContent');
-      this.isCollapsed = false;
-      this.updateInterval = null;
-      this.loadInterval = null;
-      
-      this.init();
-    }
-    
-    init() {
-      if (!this.widget) {
-        console.error('Resource widget not found');
-        return;
-      }
-      
-      console.log('Initializing resource usage widget...');
-      this.setupEventListeners();
-      this.updateSystemInfo();
-      this.startUpdating();
-      this.animateWidget();
-    }
-    
-    setupEventListeners() {
-      // Make header clickable
-      this.header.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.toggleWidget();
-      });
-      
-      // Make toggle button clickable
-      this.toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.toggleWidget();
-      });
-      
-      // Hide widget on mobile
-      this.checkMobileVisibility();
-      window.addEventListener('resize', () => {
-        this.checkMobileVisibility();
-      });
-      
-      console.log('Resource widget event listeners setup complete');
-    }
-    
-    checkMobileVisibility() {
-      if (window.innerWidth <= 400) {
-        this.widget.style.display = 'none';
-        console.log('Resource widget hidden on mobile');
-      } else {
-        this.widget.style.display = 'block';
-        console.log('Resource widget visible on desktop');
-      }
-    }
-    
-    toggleWidget() {
-      this.isCollapsed = !this.isCollapsed;
-      
-      console.log(`Toggling resource widget: ${this.isCollapsed ? 'collapsing' : 'expanding'}`);
-      
-      if (this.isCollapsed) {
-        this.content.classList.add('collapsed');
-        this.toggle.classList.add('collapsed');
-        this.toggle.textContent = '▶';
-      } else {
-        this.content.classList.remove('collapsed');
-        this.toggle.classList.remove('collapsed');
-        this.toggle.textContent = '▼';
-      }
-      
-      console.log(`Resource widget ${this.isCollapsed ? 'collapsed' : 'expanded'}`);
-    }
-    
-    updateSystemInfo() {
-      try {
-        // CPU Cores
-        const cpuCores = navigator.hardwareConcurrency || null;
-        const cpuElement = document.getElementById('cpuCores');
-        if (cpuElement) {
-          cpuElement.textContent = cpuCores ? `${cpuCores} cores` : 'N/A';
         }
         
-        // Device Memory
-        const deviceMemory = navigator.deviceMemory || null;
-        const memoryElement = document.getElementById('deviceMemory');
-        if (memoryElement) {
-          memoryElement.textContent = deviceMemory ? `${deviceMemory} GB` : 'N/A';
-        }
-        
-        // Device IP
-        fetch('https://api.ipify.org/?format=json')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("deviceIP").textContent = data.ip;
-        })
-        .catch(() => {
-            document.getElementById("deviceIP").textContent = 'Unavailable';
-        });
-        
-      } catch (error) {
-        console.error('Error updating system info:', error);
-      }
-    }
-    
-    updateLoad() {
-      try {
-        // Simulate load percentage with realistic variation
-        const baseLoad = 25 + Math.random() * 50; // 25-75%
-        const time = Date.now() * 0.0008;
-        const oscillation = Math.sin(time) * 20; // ±20% oscillation
-        const load = Math.max(5, Math.min(95, baseLoad + oscillation));
-        
-        const loadFill = document.getElementById('loadFill');
-        if (loadFill) {
-          loadFill.style.width = `${load}%`;
-          
-          // Change color based on load
-          let gradient;
-          if (load < 30) {
-            gradient = 'linear-gradient(90deg, #1DB954, #1ed760)';
-          } else if (load < 70) {
-            gradient = 'linear-gradient(90deg, #ffbd2e, #ff9900)';
-          } else {
-            gradient = 'linear-gradient(90deg, #ff5f57, #ff3030)';
-          }
-          
-          loadFill.style.background = gradient;
-        }
-      } catch (error) {
-        console.error('Error updating load:', error);
-      }
-    }
-    
-    startUpdating() {
-      // Update system info every 5 seconds
-      this.updateInterval = setInterval(() => {
-        this.updateSystemInfo();
-      }, 5000);
-      
-      // Update load animation more frequently
-      this.loadInterval = setInterval(() => {
-        this.updateLoad();
-      }, 800);
-      
-      console.log('Resource widget update intervals started');
-    }
-    
-    animateWidget() {
-      // Add subtle floating animation
-      let startTime = Date.now();
-      
-      const animate = () => {
-        const time = (Date.now() - startTime) * 0.001;
-        const floatOffset = Math.sin(time * 0.6) * 2;
-        
-        if (this.widget) {
-          this.widget.style.transform = `translateY(${floatOffset}px)`;
-        }
-        
-        requestAnimationFrame(animate);
-      };
-      
-      animate();
-    }
-    
-    destroy() {
-      if (this.updateInterval) {
-        clearInterval(this.updateInterval);
-      }
-      if (this.loadInterval) {
-        clearInterval(this.loadInterval);
+        if (this.renderer && this.scene && this.camera) {
+            this.renderer.render(this.scene, this.camera);
       }
     }
   }
   
-  // Spotify Background Controller
+// Spotify Background Controller (kept as requested features, optimized where possible)
   class SpotifyBackgroundController {
     constructor() {
       this.nowPlayingBar = document.querySelector('.now-playing-bar');
@@ -641,8 +385,6 @@ class DevOpsParticleSystem {
           if (cover) {
             cover.style.animationPlayState = this.isPlaying ? 'running' : 'paused';
           }
-          
-          // console.log(`Music ${this.isPlaying ? 'playing' : 'paused'}`);
         });
       }
       
@@ -682,7 +424,6 @@ class DevOpsParticleSystem {
         card.addEventListener('click', () => {
           const playlistName = card.querySelector('.playlist-name')?.textContent || 
                               card.querySelector('h4')?.textContent || 'Unknown Playlist';
-          // console.log(`Playing playlist: ${playlistName}`);
           this.updateTrackInfo(playlistName, 'Various Artists');
           this.currentProgress = 0;
         });
@@ -740,7 +481,6 @@ class DevOpsParticleSystem {
     updateCurrentTrack() {
       const track = this.tracks[this.trackIndex];
       this.updateTrackInfo(track.name, track.artist);
-      // console.log(`Now playing: ${track.name} by ${track.artist}`);
     }
     
     updateTrackInfo(trackName, artistName) {
@@ -758,180 +498,24 @@ class DevOpsParticleSystem {
     }
   }
   
-  // Enhanced loading and initialization
-  function initializeApplication() {
-    // console.log('=== DevOps Portfolio with Spotify Integration Initializing ===');
-    
-    try {
-      // Initialize particle system
-      // console.log('Starting particle system...');
-      const particleSystem = new DevOpsParticleSystem();
-      window.particleSystem = particleSystem; // For debugging
-      
-      // Initialize resource usage widget
-      // console.log('Starting resource widget...');
-      const resourceWidget = new ResourceUsageWidget();
-      window.resourceWidget = resourceWidget; // For debugging
-      
-      // Initialize Spotify background
-      // console.log('Starting Spotify background...');
-      const spotifyBackground = new SpotifyBackgroundController();
-      window.spotifyBackground = spotifyBackground; // For debugging
-      
-      // console.log('✅ All systems initialized successfully');
-      
-      // Force initial particle creation
-      setTimeout(() => {
-        if (particleSystem.particles.length === 0) {
-          // console.log('Force creating initial particles...');
-          for (let i = 0; i < 5; i++) {
-            particleSystem.createParticle(true);
-          }
-        }
-      }, 1000);
-      
-    } catch (error) {
-      console.error('❌ Error initializing systems:', error);
-    }
-  }
-  
-  // Add enhanced styling and animations
-  function addEnhancedStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      
-      @keyframes pulseGlow {
-        0%, 100% {
-          box-shadow: 0 0 5px rgba(29, 185, 84, 0.3);
-        }
-        50% {
-          box-shadow: 0 0 20px rgba(29, 185, 84, 0.6);
-        }
-      }
-      
-      .terminal-window {
-        animation: fadeInUp 0.8s ease-out forwards;
-      }
-      
-      .terminal-window:nth-child(1) { animation-delay: 0.1s; opacity: 0; }
-      .terminal-window:nth-child(2) { animation-delay: 0.2s; opacity: 0; }
-      .terminal-window:nth-child(3) { animation-delay: 0.3s; opacity: 0; }
-      .terminal-window:nth-child(4) { animation-delay: 0.4s; opacity: 0; }
-      
-      .particle {
-        will-change: transform, opacity;
-      }
-      
-      .resource-widget {
-        animation: fadeInUp 1s ease-out 0.5s both;
-        opacity: 0;
-      }
-      
-      .resource-header:hover {
-        animation: pulseGlow 2s ease-in-out infinite;
-      }
-      
-      .spotify-interface {
-        animation: fadeInUp 1.2s ease-out 0.2s both;
-        opacity: 0;
-      }
-      
-      .now-playing-bar {
-        animation: fadeInUp 1s ease-out 0.8s both;
-        opacity: 0;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  
-  // Initialize everything when DOM is loaded
+// Initialize Application
   document.addEventListener('DOMContentLoaded', () => {
-    // Add enhanced styles first
-    addEnhancedStyles();
+    // Initialize Spotify Background
+    window.spotifyBackground = new SpotifyBackgroundController();
     
-    // Add loading animation to body
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 1.5s ease-in-out';
-    
-    setTimeout(() => {
-      document.body.style.opacity = '1';
-    }, 100);
-    
-    // Initialize main application after short delay
-    setTimeout(() => {
-      initializeApplication();
-    }, 300);
-    
-    // Add scroll-based animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
-        }
-      });
-    }, observerOptions);
-    
-    // Observe terminal windows after they exist
-    setTimeout(() => {
-      document.querySelectorAll('.terminal-window').forEach(window => {
-        observer.observe(window);
-      });
-    }, 500);
+    // Initialize Evolution System
+    window.evolutionManager = new EvolutionManager();
     
     // Console welcome message
     console.log(`
       ╔══════════════════════════════════════╗
-      ║     DevOps Portfolio v3.0 Spotify   ║
-      ║        Enhanced Terminal Edition     ║
+      ║     DevOps Portfolio v4.0 Evolution   ║
+      ║        Three.js Enhanced Edition     ║
       ║                                      ║
       ║  🎵 Spotify Background: ACTIVE       ║
-      ║  📊 Resource Monitor: RUNNING        ║
-      ║  🐳 Docker   ☸️  Kubernetes          ║
-      ║  ☁️  AWS      🔧 Terraform           ║
-      ║  🔄 Jenkins  📊 Prometheus           ║
-      ║  🔥 Git      ⚡ Ansible              ║
-      ║                                      ║
-      ║  ✨ Particles: ACTIVE                ║
-      ║  🖱️  Parallax: ENABLED              ║
-      ║  🎧 Now Playing: Study Beats         ║
+      ║  🚀 Three.js Core: INITIALIZING      ║
+      ║  🔄 Evolution Mode: READY            ║
       ╚══════════════════════════════════════╝
     `);
-    
-    // Performance monitoring
-    if ('performance' in window) {
-      window.addEventListener('load', () => {
-        const loadTime = performance.now();
-        console.log(`🚀 Portfolio loaded in ${Math.round(loadTime)}ms`);
-        
-        // Log system capabilities
-        console.log('💻 System Info:', {
-          cores: navigator.hardwareConcurrency || 'Unknown',
-          memory: navigator.deviceMemory ? `${navigator.deviceMemory}GB` : 'Unknown',
-          connection: navigator.connection?.effectiveType || 'Unknown',
-          viewport: `${window.innerWidth}x${window.innerHeight}`,
-          userAgent: navigator.userAgent.substring(0, 50) + '...'
-        });
-      });
-    }
-  });
-
-// Ensure the DOM is fully loaded before instantiating your class
-document.addEventListener('DOMContentLoaded', function() {
-    const myDevOpsSystem = new DevOpsParticleSystem();
-    myDevOpsSystem.init(); // Call the init method after creating an instance
 });
+

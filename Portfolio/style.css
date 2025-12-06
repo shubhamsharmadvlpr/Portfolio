@@ -1,4 +1,12 @@
 :root {
+  /* Evolution Theme Variables */
+  --bg-color: transparent;
+  --theme-color: #00f3ff;
+  --font-main: 'JetBrains Mono', monospace;
+  --border-radius: 12px;
+  --glass-opacity: 0.6;
+  --glow-strength: 15px;
+
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
   --color-black: rgba(0, 0, 0, 1);
@@ -142,6 +150,66 @@
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
+}
+
+/* --- EVOLUTION STAGES (DISABLED) --- */
+
+/* Stage 0: Retro (Terminal Style) */
+/*.stage-retro {
+  --bg-color: #000000;
+  --theme-color: #00ff00; 
+  --font-main: 'Courier New', monospace;
+  --border-radius: 0px;
+  --glass-opacity: 1;
+  --glow-strength: 0px;
+}*/
+
+/* .stage-retro .card, 
+.stage-retro .terminal-window,
+.stage-retro .nav-link { */
+  /* border: 1px solid #00ff00 !important; */
+  /* background: #000 !important; */
+  /* box-shadow: none !important; */
+  /* text-shadow: none !important; */
+/* } */
+
+/* Stage 1: Modern (Clean Web) */
+/*.stage-modern {
+  --bg-color: #111111;
+  --theme-color: #ffffff;
+  --font-main: 'Inter', sans-serif;
+  --border-radius: 8px;
+  --glass-opacity: 0.9;
+  --glow-strength: 5px;
+}*/
+
+/* .stage-modern .card { */
+  /* background: #1a1a1a !important; */
+  /* border: 1px solid #333 !important; */
+/* } */
+
+/* Stage 2: Cyber (Future/Matrix) */
+/*.stage-cyber {
+  --bg-color: rgba(5, 5, 10, 0.8);
+  --theme-color: #00f3ff; 
+  --font-main: 'JetBrains Mono', monospace;
+  --border-radius: 12px;
+  --glass-opacity: 0.6;
+  --glow-strength: 15px;
+}*/
+
+.stage-cyber .card,
+.stage-cyber .terminal-window {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--theme-color) !important;
+  box-shadow: 0 0 var(--glow-strength) var(--theme-color) !important;
+}
+
+.stage-cyber .hero-name,
+.stage-cyber h1,
+.stage-cyber h2 {
+  text-shadow: 0 0 10px var(--theme-color), 0 0 20px var(--theme-color);
 }
 
 /* Dark mode colors */
@@ -311,6 +379,10 @@ html {
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--bg-color);
+  font-family: var(--font-main);
+  color: var(--theme-color);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 *,
@@ -834,8 +906,8 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: -1;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); -- Causing flicker */
+  /* -webkit-backdrop-filter: blur(2px); */
 }
 
 /* Strong fallback for browsers without backdrop-filter support */
@@ -952,7 +1024,7 @@ body {
   position: relative;
   padding: 80px var(--space-20) var(--space-20);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .hero-content {
@@ -1109,7 +1181,7 @@ section {
 .timeline-section {
   background: var(--color-bg-1);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .timeline {
@@ -1228,7 +1300,7 @@ section {
 .work-section {
   background: var(--color-bg-2);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .projects-grid {
@@ -1353,7 +1425,7 @@ section {
 .skills-section {
   background: var(--color-bg-3);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .skills-grid {
@@ -1414,7 +1486,7 @@ section {
 .achievements-section {
   background: var(--color-bg-4);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .achievements-grid {
@@ -1475,7 +1547,7 @@ section {
 .contact-section {
   background: var(--color-bg-5);
   z-index: 20;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
 }
 
 .contact-content {
@@ -1753,7 +1825,21 @@ section {
   height: 100%;
   z-index: -3;
   overflow: hidden;
+  filter: blur(4px); /* Reduce blur as requested */
+  opacity: 1; /* Keep opacity fully visible */
 }
+
+/* Make Spotify background transparent in Retro/Cyber modes to show particles */
+/* body.stage-retro .spotify-background,
+body.stage-cyber .spotify-background {
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+}
+
+body.stage-modern .spotify-background {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+} */
 
 .spotify-interface {
   display: flex;
@@ -2107,9 +2193,14 @@ section {
   width: 100%;
   height: 100%;
   z-index: -1;
-  backdrop-filter: blur(4px);
+  /* backdrop-filter: blur(4px); */
   background: rgba(0, 0, 0, 0.4);
   pointer-events: none;
+}
+
+/* Canvas Container - Ensure it's visible but behind content */
+#canvas-container {
+  z-index: -2 !important; /* Above Spotify (-3), Below Overlay (-1) */
 }
 
 
@@ -2283,55 +2374,8 @@ section {
 
 
 
-/* Particle System */
-.particle-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.particle {
-  position: absolute;
-  opacity: 0.8;
-  transition: all 0.3s ease-out;
-  animation: float 20s linear infinite;
-  pointer-events: auto;
-  filter: drop-shadow(0 0 6px currentColor);
-  cursor: pointer;
-}
-
-.particle:hover {
-  animation-play-state: paused;
-  transform: scale(1.5) !important;
-  z-index: 1000 !important;
-}
-
-.particle svg {
-  width: 28px;
-  height: 28px;
-  transition: all 0.3s ease;
-}
-
-@keyframes float {
-  from {
-    transform: translateX(-100px) translateY(0px) rotate(0deg);
-    opacity: 0;
-  }
-  5% {
-    opacity: 0.8;
-  }
-  95% {
-    opacity: 0.8;
-  }
-  to {
-    transform: translateX(calc(100vw + 100px)) translateY(-50px) rotate(360deg);
-    opacity: 0;
-  }
-}
+/* Particle System (Legacy - Removed) */
+/* .particle-container, .particle styles removed for Three.js implementation */
   
 
 
@@ -2580,7 +2624,7 @@ section {
   position: relative;
   z-index: 20;
   min-height: 100vh;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
   background: rgba(0, 0, 0, 0.15);
   padding-bottom: 120px;
 }
