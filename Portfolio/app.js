@@ -21,7 +21,12 @@ class EvolutionManager {
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 30;
 
-        this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // Optimization: powerPreference: 'high-performance' helps browsers manage GPU resources better
+        this.renderer = new THREE.WebGLRenderer({ 
+            alpha: true, 
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.container.appendChild(this.renderer.domElement);
@@ -33,6 +38,9 @@ class EvolutionManager {
         this.raycaster = new THREE.Raycaster();
         this.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0); // Plane at Z=0
         this.mouseNdc = new THREE.Vector2(0, 0);
+        
+        // Performance Optimization: Reusable vector for animation loop to avoid garbage collection
+        this.localMouse = new THREE.Vector3();
 
         document.addEventListener('mousemove', (e) => {
             this.mouseNdc.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -324,10 +332,11 @@ class EvolutionManager {
                 // The mouse world position is static (unless mouse moves), but the
                 // local position corresponding to that world point changes as the object rotates.
                 if (this.mouse) {
-                     const localMouse = this.mouse.clone();
+                     // Optimization: Use copy instead of clone() to prevent object creation every frame
+                     this.localMouse.copy(this.mouse);
                      // Convert world coordinate to local coordinate system of the particles
-                     this.particles.worldToLocal(localMouse);
-                     this.particleMaterial.uniforms.uMouse.value.copy(localMouse);
+                     this.particles.worldToLocal(this.localMouse);
+                     this.particleMaterial.uniforms.uMouse.value.copy(this.localMouse);
                 }
             }
         }
