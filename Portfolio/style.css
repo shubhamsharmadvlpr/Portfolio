@@ -2380,115 +2380,6 @@ body.stage-modern .spotify-background {
 
 
 
-/* RESOURCE WIDGET STYLES - Add this to your existing style.css */
-.resource-widget {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 200px;
-  background: rgba(10, 10, 10, 0.9);
-  border: 1px solid rgba(31, 184, 205, 0.6);
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(31, 184, 205, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  z-index: 1000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-.resource-widget:hover {
-  border-color: var(--color-neon-blue);
-  box-shadow: 0 0 30px rgba(31, 184, 205, 0.5);
-}
-
-.widget-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease;
-}
-
-.widget-header:hover {
-  background: rgba(31, 184, 205, 0.1);
-}
-
-.widget-icon {
-  color: var(--color-neon-green);
-  margin-right: 8px;
-  font-size: 14px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
-.widget-title {
-  color: white;
-  font-weight: 600;
-  flex: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.toggle-arrow {
-  color: rgba(255, 255, 255, 0.7);
-  transition: transform 0.3s ease;
-  font-size: 10px;
-}
-
-.resource-widget.expanded .toggle-arrow {
-  transform: rotate(180deg);
-}
-
-.widget-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.resource-widget.expanded .widget-content {
-  max-height: 200px;
-}
-
-.metric-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(31, 184, 205, 0.2);
-}
-
-.metric-row:last-child {
-  border-bottom: none;
-}
-
-.metric-label {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.metric-value {
-  color: var(--color-neon-green);
-  font-weight: 600;
-  text-shadow: 0 0 5px currentColor;
-  font-size: 11px;
-  min-width: 60px;
-  text-align: right;
-}
-
-
-
-
 @keyframes spotify-progress {
   0% { width: 120px; opacity: 0.4; }
   50% { width: 200px; opacity: 0.8; }
@@ -2617,8 +2508,6 @@ body.stage-modern .spotify-background {
   50% { opacity: 1; }
 }
 
-
-
 /* Main Content */
 .main-content {
   position: relative;
@@ -2627,4 +2516,11 @@ body.stage-modern .spotify-background {
   /* backdrop-filter: blur(2px); */
   background: rgba(0, 0, 0, 0.15);
   padding-bottom: 120px;
+}
+
+/* Hide resource widget on smaller screens (mobile/tablet) */
+@media (max-width: 1024px) {
+  .resource-widget {
+    display: none !important;
+  }
 }
