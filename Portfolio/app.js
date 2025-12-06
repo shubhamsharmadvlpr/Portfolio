@@ -180,26 +180,36 @@ class EvolutionManager {
                     vProgress = uScrollProgress;
                     vCharIndex = aCharIndex;
                     
-                    // Interpolate position
+                    // Interpolate position in LOCAL space
                     vec3 pos = mix(aInitial, aTarget, smoothstep(0.2, 0.8, uScrollProgress));
         
                     // Noise/Float movement
                     pos.y += sin(uTime * 0.5 + pos.x) * 0.2;
                     pos.x += cos(uTime * 0.3 + pos.y) * 0.2;
                     
-                    // Mouse repulsion
-                    // uMouse is now in World Coordinates
-                    float dist = distance(pos, uMouse);
-                    float repulsion = smoothstep(8.0, 0.0, dist); // Increased radius slightly
-                    vec3 dir = normalize(pos - uMouse);
-                    pos += dir * repulsion * 4.0; // Stronger repulsion
+                    // Convert to WORLD space for interaction
+                    // We want the interaction to be consistent with the screen/mouse, regardless of object rotation.
+                    vec4 worldPos = modelMatrix * vec4(pos, 1.0);
                     
-                    vPos = pos;
+                    // Mouse repulsion - Cylinder Interaction (World Space)
+                    // Calculate distance in XY plane of World Space
+                    float dist = distance(worldPos.xy, uMouse.xy);
+                    float repulsion = smoothstep(3.5, 0.0, dist); 
                     
-                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                    // Push direction in World Space XY plane
+                    vec3 dir = normalize(vec3(worldPos.x - uMouse.x, worldPos.y - uMouse.y, 0.0));
+                    
+                    // Apply repulsion to World Position
+                    worldPos.xyz += dir * repulsion * 5.0;
+                    
+                    // Transform back to view/clip space
+                    vec4 mvPosition = viewMatrix * worldPos;
                     gl_Position = projectionMatrix * mvPosition;
+                    
+                    // Pass world position to fragment if needed (or just use local for varying)
+                    vPos = pos; 
         
-                    // Size modulation - Increased base size for text visibility
+                    // Size modulation
                     float baseSize = mix(12.0, 20.0, uScrollProgress);
                     gl_PointSize = baseSize * aSize * (30.0 / -mvPosition.z);
                 }
@@ -221,11 +231,6 @@ class EvolutionManager {
                     float col = mod(vCharIndex, cols);
                     float row = floor(vCharIndex / cols);
                     
-                    // Map UV to atlas cell
-                    // Assumes char drawn at top (row 0) corresponds to V 0.75-1.0 range if 0,0 is bottom-left
-                    // Canvas (0,0) is top-left.
-                    // Row 0 in loop (top of canvas) = top of texture = high V
-                    
                     float uvRow = 3.0 - row; // Flip row index for GL texture coords
                     vec2 atlasUV = (uv + vec2(col, uvRow)) / cols;
                     
@@ -237,13 +242,8 @@ class EvolutionManager {
                     // Color interpolation
                     vec3 color = mix(uColorRetro, uColorCyber, uScrollProgress);
                     
-                    // Add some glow to the character itself
-                    // float dist = length(gl_PointCoord - 0.5);
-                    // float glow = exp(-dist * 3.0) * uScrollProgress;
-                    // color += glow * 0.3;
-                    
                     gl_FragColor = vec4(color, texColor.a);
-      }
+                }
             `,
             transparent: true,
             depthWrite: false,
@@ -327,16 +327,11 @@ class EvolutionManager {
             if (this.particles) {
                 this.particles.rotation.y = this.scrollProgress * Math.PI * 0.2 + (performance.now() * 0.0001);
                 
-                // Update Mouse Uniform (World -> Local conversion)
-                // We need to do this every frame because the object rotates
-                // The mouse world position is static (unless mouse moves), but the
-                // local position corresponding to that world point changes as the object rotates.
+                // Update Mouse Uniform
+                // We pass the WORLD SPACE mouse position directly.
+                // The shader now handles the interaction in world space, so we don't need to transform to local.
                 if (this.mouse) {
-                     // Optimization: Use copy instead of clone() to prevent object creation every frame
-                     this.localMouse.copy(this.mouse);
-                     // Convert world coordinate to local coordinate system of the particles
-                     this.particles.worldToLocal(this.localMouse);
-                     this.particleMaterial.uniforms.uMouse.value.copy(this.localMouse);
+                     this.particleMaterial.uniforms.uMouse.value.copy(this.mouse);
                 }
             }
         }
