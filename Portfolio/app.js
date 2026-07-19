@@ -32,6 +32,7 @@ class EvolutionManager {
         this.container.appendChild(this.renderer.domElement);
 
         this.createParticles();
+        this.applyThemeColorsFromDOM();
         
         // Mouse tracking - Store World Position
         this.mouse = new THREE.Vector3(9999, 9999, 9999); // Initialize far off-screen
@@ -315,6 +316,27 @@ class EvolutionManager {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     }
+
+    /* Recolour the particle field to match the active design theme */
+    setParticleColors(mainHex, secondaryHex) {
+        if (!this.particleMaterial) return;
+        this.particleMaterial.uniforms.uColorCyber.value.set(mainHex);
+        this.particleMaterial.uniforms.uColorRetro.value.set(secondaryHex);
+    }
+
+    /* Read the current data-theme attribute and tint particles accordingly */
+    applyThemeColorsFromDOM() {
+        const theme = document.documentElement.getAttribute('data-theme');
+        const map = {
+            quantum: ['#00f3ff', '#7b5cff'],
+            plasma: ['#ff3df5', '#7b2ff7'],
+            matrix: ['#39ff14', '#00ffa3'],
+            hologram: ['#2afadf', '#5b8cff'],
+            solar: ['#ff8a3d', '#ff2d55']
+        };
+        const colors = map[theme] || map.quantum;
+        this.setParticleColors(colors[0], colors[1]);
+    }
     
     animate() {
         requestAnimationFrame(() => this.animate());
@@ -505,6 +527,91 @@ class EvolutionManager {
     }
   }
   
+// Theme Switcher — lets visitors pick one of 5 futuristic designs
+class ThemeSwitcher {
+    constructor() {
+        this.STORAGE_KEY = 'portfolio-theme';
+        this.themes = {
+            quantum:  { label: 'Quantum',  accent: '#00f3ff', accent2: '#7b5cff' },
+            plasma:   { label: 'Plasma',   accent: '#ff3df5', accent2: '#7b2ff7' },
+            matrix:   { label: 'Matrix',   accent: '#39ff14', accent2: '#00ffa3' },
+            hologram: { label: 'Hologram', accent: '#2afadf', accent2: '#5b8cff' },
+            solar:    { label: 'Solar',    accent: '#ff8a3d', accent2: '#ff2d55' }
+        };
+        this.order = ['quantum', 'plasma', 'matrix', 'hologram', 'solar'];
+        this.root = document.documentElement;
+        this.current = this.root.getAttribute('data-theme') || 'quantum';
+        this.build();
+        this.apply(this.current, false);
+    }
+
+    build() {
+        const dock = document.createElement('div');
+        dock.className = 'theme-dock';
+        dock.setAttribute('role', 'group');
+        dock.setAttribute('aria-label', 'Choose a futuristic design theme');
+
+        const label = document.createElement('span');
+        label.className = 'theme-dock__label';
+        label.textContent = 'Design';
+        dock.appendChild(label);
+
+        const options = document.createElement('div');
+        options.className = 'theme-dock__options';
+        options.id = 'themeOptions';
+
+        this.order.forEach((key) => {
+            const t = this.themes[key];
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'theme-swatch';
+            btn.dataset.theme = key;
+            btn.setAttribute('aria-label', t.label + ' theme');
+            btn.style.setProperty('--sw1', t.accent);
+            btn.style.setProperty('--sw2', t.accent2);
+            btn.innerHTML =
+                '<span class="theme-swatch__dot"></span>' +
+                '<span class="theme-swatch__name">' + t.label + '</span>';
+            btn.addEventListener('click', () => this.apply(key, true));
+            options.appendChild(btn);
+        });
+        dock.appendChild(options);
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'theme-dock__toggle';
+        toggle.setAttribute('aria-label', 'Toggle theme picker');
+        toggle.textContent = '✦';
+        toggle.addEventListener('click', () => dock.classList.toggle('collapsed'));
+        dock.appendChild(toggle);
+
+        document.body.appendChild(dock);
+        this.dock = dock;
+    }
+
+    apply(key, persist) {
+        if (!this.themes[key]) key = 'quantum';
+        this.current = key;
+        this.root.setAttribute('data-theme', key);
+
+        const t = this.themes[key];
+        if (window.evolutionManager && window.evolutionManager.setParticleColors) {
+            window.evolutionManager.setParticleColors(t.accent, t.accent2);
+        }
+
+        this.dock.querySelectorAll('.theme-swatch').forEach((b) => {
+            const active = b.dataset.theme === key;
+            b.classList.toggle('active', active);
+            if (active) b.setAttribute('aria-current', 'true');
+            else b.removeAttribute('aria-current');
+        });
+
+        if (persist) {
+            try { localStorage.setItem(this.STORAGE_KEY, key); } catch (e) {}
+        }
+    }
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Spotify Background
@@ -515,6 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize Resource Widget
     window.resourceWidget = new ResourceUsageWidget();
+
+    // Initialize Theme Switcher (5 selectable futuristic designs)
+    window.themeSwitcher = new ThemeSwitcher();
     
     // Console welcome message
     console.log(`

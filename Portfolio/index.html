@@ -14,6 +14,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <script>
+      /* Apply the saved design theme before first paint to avoid a flash */
+      (function () {
+        try {
+          var saved = localStorage.getItem('portfolio-theme');
+          var valid = ['quantum', 'plasma', 'matrix', 'hologram', 'solar'];
+          if (!saved || valid.indexOf(saved) === -1) saved = 'quantum';
+          document.documentElement.setAttribute('data-theme', saved);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'quantum');
+        }
+      })();
+    </script>
 </head>
 <body>
     <!-- Three.js Canvas Container -->
