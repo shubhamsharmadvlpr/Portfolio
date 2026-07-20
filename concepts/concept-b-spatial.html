@@ -3,27 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Shubham Sharma — Manager, Cloud Engineering. 5.5+ years in multi-cloud Kubernetes, SRE, and automation.">
-<meta name="keywords" content="DevOps, SRE, Cloud Engineering, Kubernetes, AWS, GCP, Azure, Automation">
-<meta property="og:title" content="Shubham Sharma — Manager, Cloud Engineering">
-<meta property="og:description" content="Multi-cloud Kubernetes, SRE and automation — 5.5+ years of platform engineering.">
-<meta property="og:type" content="website">
-<title>Shubham Sharma — Manager, Cloud Engineering</title>
-<link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+<meta name="description" content="Concept B — Canvas-Driven Spatial UI portfolio for Shubham Sharma: refined, luminous, full experience.">
+<title>Concept B · Canvas-Driven Spatial UI — Shubham Sharma</title>
 <style>
   /* ============================================================
-     MAIN PORTFOLIO — Canvas-Driven Spatial UI (refined)
+     CONCEPT B — CANVAS-DRIVEN SPATIAL UI  (refined, luminous)
      Persistent node/vector field · cursor-reactive · decrypt text
-     Self-contained. Dependency-free (Canvas 2D). Three.js-ready.
+     Full portfolio. Dependency-free (Canvas 2D). Three.js-ready.
      ============================================================ */
   :root{
-    --bg-0:#0a1030;
+    --bg-0:#0a1030;            /* deep indigo (not black) */
     --bg-1:#0c1340;
     --fg:#eef4ff;
     --muted:#a6b8da;
-    --accent:#3ce8ff;
-    --accent-2:#9b8bff;
-    --accent-3:#ff7fd6;
+    --accent:#3ce8ff;          /* luminous cyan */
+    --accent-2:#9b8bff;        /* bright violet */
+    --accent-3:#ff7fd6;        /* soft pink accent for life */
     --line:1px solid rgba(140,190,255,.22);
     --panel:rgba(255,255,255,.055);
     --panel-strong:rgba(255,255,255,.09);
@@ -31,7 +26,7 @@
     --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  html{scroll-behavior:smooth}
   body{
     background:
       radial-gradient(1100px 760px at 12% -12%, rgba(60,232,255,.20), transparent 55%),
@@ -54,16 +49,16 @@
   /* ---- Top bar / nav ---- */
   .topbar{position:fixed;inset:0 0 auto 0;z-index:40;display:flex;align-items:center;gap:14px;
     padding:11px 18px;background:rgba(10,16,48,.55);border-bottom:var(--line);backdrop-filter:blur(10px)}
-  .topbar .brand{font-family:var(--mono);font-weight:700;letter-spacing:1px;color:var(--fg);font-size:15px}
-  .topbar .brand b{color:var(--accent)}
+  .topbar .tag{border:1px solid var(--accent);color:var(--accent);padding:4px 10px;font-family:var(--mono);font-size:12px;letter-spacing:2px}
+  .topbar .title{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
   .topbar nav{display:flex;gap:16px;margin-left:auto}
   .topbar nav a{font-family:var(--mono);font-size:12px;letter-spacing:.5px;color:var(--muted);transition:color .2s ease}
   .topbar nav a:hover{color:var(--accent)}
-  .topbar a.back{border:1px solid var(--accent);padding:5px 11px;color:var(--accent);transition:all .2s ease;font-family:var(--mono);font-size:12px}
+  .topbar a.back{border:1px solid var(--accent);padding:5px 11px;color:var(--accent);transition:all .2s ease}
   .topbar a.back:hover{background:var(--accent);color:#06122a}
   @media(max-width:720px){.topbar nav{display:none}}
 
-  .wrap{position:relative;z-index:10;max-width:1080px;margin:0 auto;padding:104px 22px 130px}
+  .wrap{position:relative;z-index:10;max-width:1080px;margin:0 auto;padding:104px 22px 100px}
 
   /* ---- Hero ---- */
   .hero{padding:36px 0 22px}
@@ -73,14 +68,16 @@
   .role{margin-top:18px;color:var(--muted);font-size:clamp(14px,2.4vw,20px);font-family:var(--mono)}
   .role b{color:var(--accent)}
   .intro{margin-top:18px;max-width:680px;color:var(--fg);opacity:.92;font-size:16px}
-  .availability{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:12px;letter-spacing:.5px;
-    color:var(--accent);border:1px solid var(--line);padding:6px 13px;border-radius:999px;background:rgba(60,232,255,.06)}
 
   /* ---- Sections ---- */
   .sec{padding:44px 0 8px}
   .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;border-bottom:var(--line);padding-bottom:12px}
   .sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:1px}
   .sec-head h2{font-size:clamp(22px,4.4vw,36px);text-transform:none;letter-spacing:-.5px;color:var(--fg)}
+
+  .panel{border:var(--line);background:var(--panel);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    padding:20px;margin:14px 0;transition:border-color .3s ease,box-shadow .3s ease,background .3s ease}
+  .panel:hover{border-color:rgba(60,232,255,.5);background:var(--panel-strong);box-shadow:0 0 26px rgba(60,232,255,.14)}
 
   /* Experience timeline */
   .timeline{position:relative;margin-left:14px;padding-left:26px;border-left:2px solid rgba(155,139,255,.35)}
@@ -131,23 +128,8 @@
   .contact a{display:inline-block;border:var(--line);padding:12px 18px;font-family:var(--mono);font-size:13px;letter-spacing:.5px;transition:all .2s ease}
   .contact a:hover{background:var(--accent);color:#06122a;border-color:var(--accent)}
 
-  .foot{margin-top:42px;font-family:var(--mono);font-size:12px;letter-spacing:.5px;color:var(--muted);
-    border-top:var(--line);padding-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
-  .foot a{color:var(--accent)}
-
-  /* ---- Bottom "Designs" dock ---- */
-  .designs-dock{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:300;
-    display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
-    background:rgba(10,16,48,.72);border:1px solid var(--line);backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);box-shadow:0 10px 36px rgba(0,0,0,.5),0 0 18px rgba(60,232,255,.18);
-    font-family:var(--mono)}
-  .designs-dock .lbl{color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:0 4px}
-  .designs-dock a{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;
-    border:1px solid transparent;color:var(--muted);text-decoration:none;font-size:12px;font-weight:700;transition:all .2s ease}
-  .designs-dock a:hover{color:var(--fg);border-color:rgba(60,232,255,.4);transform:translateY(-2px)}
-  .designs-dock a.active{color:#06122a;background:var(--accent);border-color:var(--accent)}
-  .designs-dock a.all{width:auto;padding:0 12px;border-radius:999px}
-  @media(max-width:560px){.designs-dock .lbl{display:none}.designs-dock{bottom:12px;gap:5px;padding:6px 10px}.designs-dock a{width:28px;height:28px}}
+  .foot{margin-top:42px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;
+    border-top:var(--line);padding-top:16px}
 
   /* reveal-on-scroll (reduced-motion safe) */
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -166,7 +148,8 @@
   <div class="scrim" aria-hidden="true"></div>
 
   <header class="topbar">
-    <span class="brand">SHUBHAM<b>.SH</b></span>
+    <span class="tag">CONCEPT B</span>
+    <span class="title">Canvas-Driven Spatial UI</span>
     <nav>
       <a href="#experience">Experience</a>
       <a href="#work">Work</a>
@@ -174,16 +157,15 @@
       <a href="#impact">Impact</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="back" href="../concepts/index.html">DESIGNS ↗</a>
+    <a class="back" href="../Portfolio/index.html">← PORTFOLIO</a>
   </header>
 
   <main class="wrap">
     <section class="hero">
-      <div class="kicker">Portfolio · Canvas-Driven Spatial</div>
+      <div class="kicker">Portfolio · Canvas-Driven Spatial Concept</div>
       <h1><span class="decrypt" data-text="SHUBHAM SHARMA">SHUBHAM SHARMA</span></h1>
       <p class="role"><b>Manager — Cloud Engineering</b> · Kubernetes · SRE · Automation · 5.5+ yrs</p>
       <p class="intro">Cloud engineering leader designing and automating multi-cloud deployments across AWS, GCP, and Azure — platform reliability, GitOps, and cost performance at scale.</p>
-      <div class="availability">● Open to Staff / Principal Platform roles</div>
     </section>
 
     <!-- EXPERIENCE -->
@@ -290,23 +272,9 @@
         <a href="https://www.linkedin.com/in/shubham-sharma-devops/" target="_blank" rel="noopener">💼 LinkedIn</a>
         <a href="https://github.com" target="_blank" rel="noopener">⚡ GitHub</a>
       </div>
-      <div class="foot">
-        <span>© 2025 Shubham Sharma · Canvas-Driven Spatial concept</span>
-        <a href="../concepts/index.html">Explore all design concepts ↗</a>
-      </div>
+      <p class="foot">CONCEPT B · CANVAS-DRIVEN SPATIAL UI · REFINED &amp; LUMINOUS</p>
     </section>
   </main>
-
-  <!-- Bottom "Designs" switcher -->
-  <nav class="designs-dock" aria-label="Switch design concept">
-    <span class="lbl">Designs</span>
-    <a href="../concepts/concept-a-brutalist.html" title="Concept A — Neo-Brutalist">A</a>
-    <a href="../concepts/concept-b-spatial.html" class="active" title="Concept B — Spatial (this design)" aria-current="true">B</a>
-    <a href="../concepts/concept-c-liquid.html" title="Concept C — Liquid Kinetic">C</a>
-    <a href="../concepts/concept-d-hud.html" title="Concept D — HUD / CLI">D</a>
-    <a href="../concepts/concept-e-bento.html" title="Concept E — Bento Grid">E</a>
-    <a class="all" href="../concepts/index.html" title="All concepts">All ↗</a>
-  </nav>
 
 <script>
 (function(){

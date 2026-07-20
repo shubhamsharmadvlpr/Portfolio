@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Concept D — High-Density HUD & Command Line Interface portfolio prototype with a live terminal.">
+<title>Concept D · High-Density HUD & CLI — Shubham Sharma</title>
+<style>
+  /* ============================================================
+     CONCEPT D — HIGH-DENSITY HUD & CLI
+     Telemetry overlays · data grids · functional terminal.
+     Dependency-free. Monospaced diagnostic layouts.
+     ============================================================ */
+  :root{
+    --bg:#04070b; --fg:#cfeaff; --muted:#5f86a0; --accent:#36ff9e; --accent-2:#36c8ff;
+    --line:1px solid rgba(54,255,158,.22); --mono:"JetBrains Mono",ui-monospace,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:14px;line-height:1.5;overflow-x:hidden}
+  a{color:var(--accent);text-decoration:none}
+  ::selection{background:var(--accent);color:#04070b}
+
+  /* HUD corner brackets */
+  .hud{position:fixed;inset:14px;z-index:5;pointer-events:none}
+  .hud::before,.hud::after{content:"";position:absolute;width:26px;height:26px;border:2px solid var(--accent);opacity:.6}
+  .hud::before{top:0;left:0;border-right:0;border-bottom:0}
+  .hud::after{bottom:0;right:0;border-left:0;border-top:0}
+  .tele{position:fixed;z-index:6;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+  .tele.tl{top:18px;left:48px}.tele.tr{top:18px;right:48px;text-align:right}
+  .tele.bl{bottom:18px;left:48px}.tele.br{bottom:18px;right:48px;text-align:right}
+  .tele b{color:var(--accent)}
+
+  .topbar{position:fixed;inset:36px 36px auto;z-index:20;display:flex;align-items:center;gap:12px;
+    padding:8px 14px;background:rgba(4,7,11,.7);border:var(--line);backdrop-filter:blur(6px)}
+  .topbar .tag{border:1px solid var(--accent);color:var(--accent);padding:3px 9px;font-size:11px;letter-spacing:2px}
+  .topbar .title{font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+  .topbar a.back{margin-left:auto;border:1px solid var(--accent);padding:5px 11px;font-size:11px;letter-spacing:1px;color:var(--accent)}
+  .topbar a.back:hover{background:var(--accent);color:#04070b}
+
+  .wrap{position:relative;z-index:10;max-width:1040px;margin:0 auto;padding:128px 40px 90px}
+  .hero{padding:18px 0 26px;border-bottom:var(--line)}
+  .kicker{color:var(--accent);letter-spacing:3px;font-size:11px;text-transform:uppercase;margin-bottom:12px}
+  h1{font-size:clamp(34px,7vw,76px);line-height:1;letter-spacing:-1px;font-weight:700}
+  .role{margin-top:12px;color:var(--muted);font-size:clamp(12px,2vw,16px)}
+  .role b{color:var(--accent)}
+
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:22px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .panel{border:var(--line);background:rgba(10,20,28,.5);padding:16px}
+  .panel h2{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;
+    border-bottom:var(--line);padding-bottom:6px}
+  .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(54,255,158,.12);font-size:12px}
+  .row span:last-child{color:var(--accent-2)}
+  .mini{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .chip{border:var(--line);padding:12px;text-align:center}
+  .chip .v{font-size:24px;color:var(--accent);font-weight:700}
+  .chip .l{font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tags span{border:var(--line);padding:5px 10px;font-size:11px;color:var(--fg)}
+  .tags span:hover{background:var(--accent);color:#04070b}
+
+  /* Terminal */
+  .term{border:var(--line);background:rgba(0,0,0,.55);margin-top:22px}
+  .term-bar{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:var(--line);font-size:11px;color:var(--muted)}
+  .term-bar i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .term-bar .r{background:#ff5f56}.term-bar .y{background:#ffbd2e}.term-bar .g{background:#27ca3f}
+  .term-body{height:240px;overflow:auto;padding:12px;font-size:13px}
+  .term-body p{margin:2px 0;white-space:pre-wrap;word-break:break-word}
+  .term-body .ok{color:var(--accent)}.term-body .dim{color:var(--muted)}
+  .prompt-line{display:flex;gap:8px;align-items:center;padding:8px 12px;border-top:var(--line)}
+  .prompt-line .ps{color:var(--accent)}
+  .prompt-line input{flex:1;background:transparent;border:0;color:var(--fg);font-family:var(--mono);font-size:13px;outline:none}
+  .cursor-blink{animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .foot{margin-top:26px;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+
+  /* Loading sequence */
+  .boot{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;transition:opacity .5s ease}
+  .boot.done{opacity:0;pointer-events:none}
+  .boot .bar{width:240px;height:6px;border:1px solid var(--accent);overflow:hidden}
+  .boot .bar i{display:block;height:100%;width:0;background:var(--accent);animation:load 1.4s ease forwards}
+  @keyframes load{to{width:100%}}
+  .boot small{font-size:11px;letter-spacing:2px;color:var(--muted)}
+
+  @media (prefers-reduced-motion: reduce){
+    .boot{display:none}
+    *{animation:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+  <div class="hud" aria-hidden="true"></div>
+  <div class="tele tl" id="tele-tl">SYS::ONLINE</div>
+  <div class="tele tr" id="tele-tr">LAT <b>12ms</b></div>
+  <div class="tele bl" id="tele-bl">CPU <b id="cpu">—</b></div>
+  <div class="tele br" id="tele-br">NET <b id="net">0.0 Gb/s</b></div>
+
+  <div class="boot" id="boot"><div class="bar"><i></i></div><small>INITIALIZING HUD INTERFACE…</small></div>
+
+  <header class="topbar">
+    <span class="tag">CONCEPT D</span>
+    <span class="title">High-Density HUD &amp; CLI</span>
+    <a class="back" href="../Portfolio/index.html">← BACK TO PORTFOLIO</a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">// diagnostics.overlay — type /help in the terminal</div>
+      <h1>SHUBHAM SHARMA</h1>
+      <p class="role"><b>Manager — Cloud Engineering</b> · Kubernetes · SRE · Automation · 5.5+ yrs</p>
+    </section>
+
+    <div class="grid2">
+      <section class="panel">
+        <h2>// live_metrics</h2>
+        <div class="row"><span>Kubernetes Clusters</span><span>100+</span></div>
+        <div class="row"><span>Cost Optimization</span><span>-40%</span></div>
+        <div class="row"><span>Daily Requests</span><span>2M+</span></div>
+        <div class="row"><span>Query Latency</span><span>-90%</span></div>
+        <div class="row"><span>Error Rate</span><span>-80%</span></div>
+      </section>
+      <section class="panel">
+        <h2>// throughput</h2>
+        <div class="mini">
+          <div class="chip"><div class="v">99.9%</div><div class="l">Uptime</div></div>
+          <div class="chip"><div class="v">50M+</div><div class="l">Time Series</div></div>
+          <div class="chip"><div class="v">3</div><div class="l">Cloud Providers</div></div>
+          <div class="chip"><div class="v">20min</div><div class="l">Deploy Time</div></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:18px">
+      <h2>// stack_matrix</h2>
+      <div class="tags">
+        <span>Kubernetes</span><span>AWS EKS</span><span>GCP GKE</span><span>Azure AKS</span><span>Terraform</span>
+        <span>GitOps</span><span>ArgoCD</span><span>Jenkins</span><span>Prometheus</span><span>Grafana</span>
+      </div>
+    </section>
+
+    <section class="term">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shubham@hud — /bin/zsh</span></div>
+      <div class="term-body" id="termBody"></div>
+      <div class="prompt-line">
+        <span class="ps">~/shubham $</span>
+        <input id="termInput" autocomplete="off" spellcheck="false" aria-label="Terminal command input" placeholder="type /help and press Enter">
+      </div>
+    </section>
+
+    <p class="foot">PROTOTYPE · CONCEPT D · HIGH-DENSITY HUD &amp; CLI · LIVE TERMINAL</p>
+  </main>
+
+<script>
+(function(){
+  // Boot sequence
+  var boot=document.getElementById('boot');
+  setTimeout(function(){ boot.classList.add('done'); document.getElementById('termInput').focus(); }, 1500);
+
+  // Telemetry ticks
+  var cpu=document.getElementById('cpu'), net=document.getElementById('net');
+  setInterval(function(){
+    cpu.textContent=Math.floor(20+Math.random()*55)+'%';
+    net.textContent=(Math.random()*12).toFixed(1)+' Gb/s';
+  }, 1200);
+
+  // Terminal
+  var body=document.getElementById('termBody'), input=document.getElementById('termInput');
+  function print(txt,cls){ var p=document.createElement('p'); if(cls)p.className=cls; p.textContent=txt; body.appendChild(p); body.scrollTop=body.scrollHeight; }
+  var cmds={
+    '/help':"Available: /about  /work  /skills  /contact  /theme  /whoami  /clear",
+    '/whoami':"shubham — Manager, Cloud Engineering · 5.5+ yrs · DevOps/SRE/Automation",
+    '/about':"Cloud engineer leading 100+ Kubernetes clusters across AWS, GCP & Azure.\nSpecialties: GitOps, cost optimization, observability, platform reliability.",
+    '/work':"→ Multi-Cloud K8s Mgmt   [100+ clusters]  [3 providers]\n→ GitOps Automation     [20min deploys] [90% faster]\n→ Secure CI/CD           [ISO27001] [80% fewer errors]\n→ Cost & Perf            [40% saved] [60% lower latency]",
+    '/skills':"AWS · Azure · GCP · Kubernetes · Docker · Terraform · Pulumi · Ansible\nJenkins · GitHub Actions · ArgoCD · GitOps · Prometheus · Grafana · Datadog\nSonarQube · Trivy · ZAP · PCI-DSS · ISO 27001",
+    '/contact':"✉ dikshits409@gmail.com\n💼 linkedin.com/in/shubham-sharma-devops\n⚡ github.com",
+    '/theme':"ACCENT CYCLED → try a few times"
+  };
+  var themes=['#36ff9e','#36c8ff','#ff5ea8','#ffd23f'];
+  var ti=0;
+  function run(raw){
+    var c=raw.trim().toLowerCase();
+    print('~/shubham $ '+raw);
+    if(c==='')return;
+    if(c==='/clear'){ body.innerHTML=''; return; }
+    if(c==='/theme'){ ti=(ti+1)%themes.length; document.documentElement.style.setProperty('--accent',themes[ti]); print('ok · accent → '+themes[ti],'ok'); return; }
+    if(cmds[c]){ print(cmds[c],'dim'); return; }
+    print("command not found: "+c+"  (try /help)",'ok');
+  }
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ run(input.value); input.value=''; }
+  });
+  print("HUD terminal ready. Type /help to list commands.","ok");
+  print("➜ welcome, operator.","dim");
+})();
+</script>
+</body>
+</html>
