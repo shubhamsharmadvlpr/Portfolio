@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Launch pad for five portfolio design-concept prototypes: Brutalist, Spatial UI, Liquid Kinetic, HUD/CLI, and Bento Grid.">
+<title>Design Concepts — Shubham Sharma Portfolio</title>
+<style>
+  :root{
+    --bg:#05070c; --fg:#e8f0ff; --muted:#8294b5; --accent:#6ee7ff; --mono:"JetBrains Mono",ui-monospace,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1000px 700px at 20% -10%,rgba(110,231,255,.10),transparent 55%),var(--bg);
+    color:var(--fg);font-family:var(--mono);line-height:1.6;min-height:100vh;padding:48px 22px 80px}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto}
+  .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .tag{border:1px solid var(--accent);color:var(--accent);padding:4px 10px;font-size:12px;letter-spacing:2px}
+  h1{font-size:clamp(30px,6vw,56px);letter-spacing:-1px;margin:18px 0 6px}
+  .lede{color:var(--muted);max-width:680px;margin-bottom:34px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .card{border:1px solid rgba(110,231,255,.22);border-radius:18px;padding:22px;background:rgba(255,255,255,.03);
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;display:block;color:var(--fg)}
+  .card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 20px 50px rgba(110,231,255,.14)}
+  .card .id{font-size:12px;letter-spacing:2px;color:var(--accent)}
+  .card h2{font-size:22px;margin:8px 0;letter-spacing:-.5px}
+  .card p{color:var(--muted);font-size:13px}
+  .card .meta{margin-top:14px;font-size:11px;letter-spacing:1px;color:var(--accent);text-transform:uppercase}
+  .foot{margin-top:40px;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+  .foot a{margin-right:14px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <span class="tag">DESIGN CONCEPTS</span>
+      <a href="../Portfolio/index.html">← Back to portfolio</a>
+    </div>
+    <h1>Five design directions</h1>
+    <p class="lede">Standalone, dependency-free, framework-ready prototypes exploring distinct layout &amp; aesthetic directions for the portfolio. Each satisfies the performance, accessibility, and framework-agility guardrails.</p>
+
+    <section class="grid">
+      <a class="card" href="concept-a-brutalist.html">
+        <div class="id">CONCEPT A</div><h2>Neo-Brutalist Cyber-Minimalism</h2>
+        <p>Stark, high-performance layout. Oversized type, hard edges, zero gradients, abrupt color-block shifts.</p>
+        <div class="meta">→ Open prototype</div>
+      </a>
+      <a class="card" href="concept-b-spatial.html">
+        <div class="id">CONCEPT B</div><h2>Canvas-Driven Spatial UI</h2>
+        <p>Immersive dark sci-fi with a persistent node/vector field that reacts to the cursor; text decrypts on hover.</p>
+        <div class="meta">→ Open prototype</div>
+      </a>
+      <a class="card" href="concept-c-liquid.html">
+        <div class="id">CONCEPT C</div><h2>Liquid Generative &amp; Kinetic</h2>
+        <p>Soft morphing glassmorphism plates over a generative gradient ripple; spring-physics cursor follow.</p>
+        <div class="meta">→ Open prototype</div>
+      </a>
+      <a class="card" href="concept-d-hud.html">
+        <div class="id">CONCEPT D</div><h2>High-Density HUD &amp; CLI</h2>
+        <p>Telemetry overlays and data grids with a functional floating terminal — type /help to explore.</p>
+        <div class="meta">→ Open prototype</div>
+      </a>
+      <a class="card" href="concept-e-bento.html">
+        <div class="id">CONCEPT E</div><h2>Modular Bento Grid</h2>
+        <p>Cohesive frosted-glass card matrix with clean-tech accents; tap cards to expand micro-dashboards.</p>
+        <div class="meta">→ Open prototype</div>
+      </a>
+    </section>
+
+    <p class="foot">
+      <a href="../Portfolio/index.html">← Portfolio</a>
+      <a href="README.md">README</a>
+    </p>
+  </main>
+</body>
+</html>

@@ -612,6 +612,62 @@ class ThemeSwitcher {
     }
 }
 
+// Concept Switcher — bottom dock that opens the 5 design-concept prototypes
+class ConceptSwitcher {
+    constructor() {
+        this.STORAGE_KEY = 'portfolio-concept';
+        this.concepts = {
+            a: { label: 'A', name: 'Brutalist', href: '../concepts/concept-a-brutalist.html' },
+            b: { label: 'B', name: 'Spatial',   href: '../concepts/concept-b-spatial.html' },
+            c: { label: 'C', name: 'Liquid',    href: '../concepts/concept-c-liquid.html' },
+            d: { label: 'D', name: 'HUD',       href: '../concepts/concept-d-hud.html' },
+            e: { label: 'E', name: 'Bento',     href: '../concepts/concept-e-bento.html' }
+        };
+        this.order = ['a', 'b', 'c', 'd', 'e'];
+        this.build();
+    }
+
+    build() {
+        const dock = document.createElement('div');
+        dock.className = 'concept-dock';
+        dock.setAttribute('role', 'group');
+        dock.setAttribute('aria-label', 'Open a design concept prototype');
+
+        const label = document.createElement('span');
+        label.className = 'concept-dock__label';
+        label.textContent = 'Concepts';
+        dock.appendChild(label);
+
+        const options = document.createElement('div');
+        options.className = 'concept-dock__options';
+
+        this.order.forEach((key) => {
+            const c = this.concepts[key];
+            const link = document.createElement('a');
+            link.className = 'concept-chip';
+            link.href = c.href;
+            link.dataset.concept = key;
+            link.setAttribute('aria-label', 'Concept ' + c.label + ': ' + c.name);
+            link.innerHTML =
+                '<span class="concept-chip__key">' + c.label + '</span>' +
+                '<span class="concept-chip__name">' + c.name + '</span>';
+            options.appendChild(link);
+        });
+        dock.appendChild(options);
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'concept-dock__toggle';
+        toggle.setAttribute('aria-label', 'Toggle design concepts');
+        toggle.textContent = '◧';
+        toggle.addEventListener('click', () => dock.classList.toggle('collapsed'));
+        dock.appendChild(toggle);
+
+        document.body.appendChild(dock);
+        this.dock = dock;
+    }
+}
+
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize Spotify Background
@@ -625,6 +681,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Theme Switcher (5 selectable futuristic designs)
     window.themeSwitcher = new ThemeSwitcher();
+
+    // Initialize Concept Switcher (5 design-concept prototypes)
+    window.conceptSwitcher = new ConceptSwitcher();
     
     // Console welcome message
     console.log(`

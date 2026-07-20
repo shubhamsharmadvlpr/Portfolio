@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Concept B — Canvas-Driven Spatial UI (WebGL/Three.js style node field) portfolio prototype.">
+<title>Concept B · Canvas-Driven Spatial UI — Shubham Sharma</title>
+<style>
+  /* ============================================================
+     CONCEPT B — CANVAS-DRIVEN SPATIAL UI
+     Persistent node/vector field · cursor-reactive · decrypt text
+     Dependency-free (Canvas 2D). Three.js-ready structure.
+     ============================================================ */
+  :root{
+    --bg:#03060f; --fg:#dff6ff; --muted:#7fb6cf; --accent:#27e6ff; --accent-2:#7b5cff;
+    --line:1px solid rgba(39,230,255,.25);
+    --mono:"JetBrains Mono",ui-monospace,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);font-family:var(--mono);line-height:1.5;overflow-x:hidden}
+  a{color:var(--accent);text-decoration:none}
+  ::selection{background:var(--accent);color:#03060f}
+
+  #field{position:fixed;inset:0;z-index:0;display:block}
+  .scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(900px 700px at 50% 0%,rgba(39,230,255,.10),transparent 60%),
+               radial-gradient(900px 700px at 80% 100%,rgba(123,92,255,.10),transparent 60%);}
+
+  .topbar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;gap:14px;
+    padding:12px 18px;background:rgba(3,6,15,.6);border-bottom:var(--line);backdrop-filter:blur(8px)}
+  .topbar .tag{border:1px solid var(--accent);color:var(--accent);padding:4px 10px;font-size:12px;letter-spacing:2px}
+  .topbar .title{font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+  .topbar a.back{margin-left:auto;border:1px solid var(--accent);padding:6px 12px;font-size:12px;letter-spacing:1px}
+  .topbar a.back:hover{background:var(--accent);color:#03060f}
+
+  .wrap{position:relative;z-index:10;max-width:1080px;margin:0 auto;padding:110px 22px 90px}
+  .hero{padding:40px 0 30px}
+  .kicker{color:var(--accent);letter-spacing:3px;font-size:12px;text-transform:uppercase;margin-bottom:14px}
+  h1{font-size:clamp(40px,9vw,104px);line-height:.95;letter-spacing:-2px;font-weight:700}
+  h1 .decrypt{color:var(--fg)}
+  .role{margin-top:18px;color:var(--muted);font-size:clamp(14px,2.4vw,20px)}
+  .role b{color:var(--accent)}
+
+  .panel{border:var(--line);background:rgba(8,14,28,.55);backdrop-filter:blur(6px);padding:20px;margin:18px 0}
+  .panel h2{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;
+    border-bottom:var(--line);padding-bottom:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .stat{border:var(--line);padding:16px}
+  .stat .v{font-size:30px;color:var(--accent);font-weight:700}
+  .stat .l{font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:6px}
+  .stat:hover{background:rgba(39,230,255,.08)}
+  .stat:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tags span{border:var(--line);padding:6px 12px;font-size:12px;letter-spacing:1px;color:var(--fg)}
+  .tags span:hover{background:var(--accent);color:#03060f}
+  .contact a{display:inline-block;border:var(--line);padding:10px 16px;margin:6px 8px 0 0;font-size:13px;letter-spacing:1px}
+  .contact a:hover{background:var(--accent);color:#03060f}
+  .foot{margin-top:34px;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+
+  @media (prefers-reduced-motion: reduce){
+    #field{display:none}
+    .scrim{background:radial-gradient(900px 700px at 50% 0%,rgba(39,230,255,.08),transparent 60%)}
+    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <span class="tag">CONCEPT B</span>
+    <span class="title">Canvas-Driven Spatial UI</span>
+    <a class="back" href="../Portfolio/index.html">← BACK TO PORTFOLIO</a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">// spatial.node-field — hover to decrypt</div>
+      <h1><span class="decrypt" data-text="SHUBHAM SHARMA">SHUBHAM SHARMA</span></h1>
+      <p class="role"><b>Manager — Cloud Engineering</b> · Kubernetes · SRE · Automation · 5.5+ yrs</p>
+    </section>
+
+    <section class="panel">
+      <h2>$ cat metrics.log</h2>
+      <div class="grid">
+        <div class="stat" tabindex="0"><div class="v">100+</div><div class="l">Kubernetes Clusters</div></div>
+        <div class="stat" tabindex="0"><div class="v">40%</div><div class="l">Cost Reduced</div></div>
+        <div class="stat" tabindex="0"><div class="v">2M+</div><div class="l">Daily Requests</div></div>
+        <div class="stat" tabindex="0"><div class="v">90%</div><div class="l">Faster Queries</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>$ ls ./stack</h2>
+      <div class="tags">
+        <span>Kubernetes</span><span>AWS</span><span>GCP</span><span>Azure</span><span>Terraform</span>
+        <span>GitOps</span><span>ArgoCD</span><span>Prometheus</span><span>Grafana</span><span>Ansible</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>$ ./connect.sh</h2>
+      <div class="contact">
+        <a href="mailto:dikshits409@gmail.com">✉ EMAIL</a>
+        <a href="https://www.linkedin.com/in/shubham-sharma-devops/" target="_blank" rel="noopener">💼 LINKEDIN</a>
+        <a href="https://github.com" target="_blank" rel="noopener">⚡ GITHUB</a>
+      </div>
+    </section>
+
+    <p class="foot">PROTOTYPE · CONCEPT B · CANVAS-DRIVEN SPATIAL UI · NODE FIELD + SCROLL/ HOVER DECRYPT</p>
+  </main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  var canvas = document.getElementById('field');
+  var ctx = canvas.getContext('2d');
+  var W, H, pts = [], mouse = {x:-9999,y:-9999};
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    W = canvas.width = innerWidth * DPR;
+    H = canvas.height = innerHeight * DPR;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+  }
+  function seed(){
+    var count = innerWidth < 700 ? 60 : 110;
+    pts = [];
+    for (var i=0;i<count;i++){
+      pts.push({
+        x: Math.random()*W, y: Math.random()*H,
+        vx: (Math.random()-.5)*0.25*DPR, vy: (Math.random()-.5)*0.25*DPR,
+        r: (Math.random()*1.6+0.6)*DPR
+      });
+    }
+  }
+  function step(){
+    ctx.clearRect(0,0,W,H);
+    for (var i=0;i<pts.length;i++){
+      var p = pts[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x<0||p.x>W) p.vx*=-1;
+      if (p.y<0||p.y>H) p.vy*=-1;
+      // cursor repulsion (world space)
+      var dx = p.x - mouse.x, dy = p.y - mouse.y;
+      var d = Math.hypot(dx,dy);
+      if (d < 140*DPR){
+        var f = (140*DPR - d)/(140*DPR);
+        p.x += (dx/d)*f*2*DPR; p.y += (dy/d)*f*2*DPR;
+      }
+    }
+    // links
+    for (var a=0;a<pts.length;a++){
+      for (var b=a+1;b<pts.length;b++){
+        var dx2 = pts[a].x-pts[b].x, dy2 = pts[a].y-pts[b].y;
+        var dist = Math.hypot(dx2,dy2);
+        if (dist < 130*DPR){
+          var o = 1 - dist/(130*DPR);
+          ctx.strokeStyle = 'rgba(39,230,255,'+(o*0.35)+')';
+          ctx.lineWidth = DPR;
+          ctx.beginPath(); ctx.moveTo(pts[a].x,pts[a].y); ctx.lineTo(pts[b].x,pts[b].y); ctx.stroke();
+        }
+      }
+    }
+    // nodes
+    for (var c=0;c<pts.length;c++){
+      ctx.fillStyle = 'rgba(123,92,255,0.9)';
+      ctx.beginPath(); ctx.arc(pts[c].x,pts[c].y,pts[c].r,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(step);
+  }
+  window.addEventListener('mousemove', function(e){ mouse.x = e.clientX*DPR; mouse.y = e.clientY*DPR; });
+  window.addEventListener('mouseout', function(){ mouse.x = -9999; mouse.y = -9999; });
+  window.addEventListener('resize', function(){ resize(); seed(); });
+  resize(); seed(); step();
+
+  // Decrypt-on-hover / scroll reveal
+  var glyphs = '!<>-_\\/[]{}—=+*^?#________';
+  document.querySelectorAll('.decrypt').forEach(function(el){
+    var real = el.getAttribute('data-text');
+    el.addEventListener('mouseenter', function(){ scramble(el, real); });
+    el.addEventListener('focus', function(){ scramble(el, real); });
+  });
+  function scramble(el, real){
+    var frame = 0, queue = [];
+    for (var i=0;i<real.length;i++) queue.push({to:real[i], start: Math.floor(Math.random()*12), end: Math.floor(Math.random()*12)+12});
+    (function tick(){
+      var out = '', done = 0;
+      for (var i=0;i<queue.length;i++){
+        var q = queue[i];
+        if (frame >= q.end){ out += q.to; done++; }
+        else if (frame >= q.start){ out += glyphs[Math.floor(Math.random()*glyphs.length)]; }
+        else out += '';
+      }
+      el.textContent = out;
+      if (done < queue.length){ frame++; requestAnimationFrame(tick); }
+      else el.textContent = real;
+    })();
+  }
+})();
+</script>
+</body>
+</html>

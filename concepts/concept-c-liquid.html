@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Concept C — Liquid Generative & Kinetic UI portfolio prototype with morphing gradients and spring motion.">
+<title>Concept C · Liquid Generative & Kinetic UI — Shubham Sharma</title>
+<style>
+  /* ============================================================
+     CONCEPT C — LIQUID GENERATIVE & KINETIC UI
+     Glassmorphism plates · generative gradient ripples ·
+     spring-physics cursor follow (no libraries).
+     ============================================================ */
+  :root{
+    --bg:#05060a; --fg:#eafff6; --muted:#9fc7bd;
+    --g1:#19f0c8; --g2:#7a5cff; --g3:#ff5ea8;
+    --glass:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.14);
+    --mono:"JetBrains Mono",ui-monospace,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;overflow-x:hidden}
+  a{color:var(--g1);text-decoration:none}
+  ::selection{background:var(--g1);color:#05060a}
+
+  #liquid{position:fixed;inset:0;z-index:0}
+  .scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(1200px 800px at 50% 40%,transparent 40%,rgba(5,6,10,.65));}
+
+  .topbar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;gap:14px;
+    padding:12px 18px;background:rgba(5,6,10,.4);border-bottom:1px solid var(--stroke);backdrop-filter:blur(10px)}
+  .topbar .tag{border:1px solid var(--g1);color:var(--g1);padding:4px 10px;font-family:var(--mono);font-size:12px;letter-spacing:2px}
+  .topbar .title{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+  .topbar a.back{margin-left:auto;border:1px solid var(--g1);padding:6px 12px;font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--g1)}
+  .topbar a.back:hover{background:var(--g1);color:#05060a}
+
+  .wrap{position:relative;z-index:10;max-width:1080px;margin:0 auto;padding:104px 22px 90px}
+  .hero{padding:30px 0}
+  .kicker{font-family:var(--mono);color:var(--g1);letter-spacing:3px;font-size:12px;text-transform:uppercase;margin-bottom:14px}
+  h1{font-size:clamp(44px,9vw,108px);line-height:.98;letter-spacing:-2px;font-weight:800}
+  .role{margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:clamp(13px,2.2vw,19px)}
+  .role b{color:var(--g1)}
+
+  .plate{border:1px solid var(--stroke);background:var(--glass);backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);border-radius:24px;padding:24px;margin:18px 0;
+    box-shadow:0 20px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08);
+    will-change:transform;transition:box-shadow .4s ease}
+  .plate:hover{box-shadow:0 26px 80px rgba(25,240,200,.18), inset 0 1px 0 rgba(255,255,255,.12)}
+  .plate h2{font-family:var(--mono);font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--g1);margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+  .stat{border:1px solid var(--stroke);border-radius:18px;padding:18px;background:rgba(255,255,255,.03)}
+  .stat .v{font-size:30px;font-weight:800;background:linear-gradient(120deg,var(--g1),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:8px}
+  .stat:focus-visible{outline:2px solid var(--g1);outline-offset:3px}
+
+  .tags{display:flex;flex-wrap:wrap;gap:10px}
+  .tags span{border:1px solid var(--stroke);border-radius:999px;padding:7px 14px;font-family:var(--mono);font-size:12px;letter-spacing:.5px;color:var(--fg)}
+  .tags span:hover{background:linear-gradient(120deg,var(--g1),var(--g2));color:#05060a}
+  .contact a{display:inline-block;border:1px solid var(--stroke);border-radius:999px;padding:11px 18px;margin:6px 8px 0 0;font-family:var(--mono);font-size:13px;letter-spacing:1px}
+  .contact a:hover{background:linear-gradient(120deg,var(--g1),var(--g3));color:#05060a}
+  .foot{margin-top:32px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+
+  @media (prefers-reduced-motion: reduce){
+    #liquid{display:none}
+    .scrim{background:radial-gradient(1200px 800px at 50% 40%,rgba(25,240,200,.10),rgba(5,6,10,.7))}
+    .plate{transition:none}
+    *{animation:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+  <canvas id="liquid" aria-hidden="true"></canvas>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <span class="tag">CONCEPT C</span>
+    <span class="title">Liquid Generative &amp; Kinetic</span>
+    <a class="back" href="../Portfolio/index.html">← BACK TO PORTFOLIO</a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">// generative.field — move your cursor</div>
+      <h1>Shubham Sharma</h1>
+      <p class="role"><b>Manager — Cloud Engineering</b> · Kubernetes · SRE · Automation · 5.5+ yrs</p>
+    </section>
+
+    <section class="plate">
+      <h2>$ cat metrics.log</h2>
+      <div class="grid">
+        <div class="stat" tabindex="0"><div class="v">100+</div><div class="l">Kubernetes Clusters</div></div>
+        <div class="stat" tabindex="0"><div class="v">40%</div><div class="l">Cost Reduced</div></div>
+        <div class="stat" tabindex="0"><div class="v">2M+</div><div class="l">Daily Requests</div></div>
+        <div class="stat" tabindex="0"><div class="v">90%</div><div class="l">Faster Queries</div></div>
+      </div>
+    </section>
+
+    <section class="plate">
+      <h2>$ ls ./stack</h2>
+      <div class="tags">
+        <span>Kubernetes</span><span>AWS</span><span>GCP</span><span>Azure</span><span>Terraform</span>
+        <span>GitOps</span><span>ArgoCD</span><span>Prometheus</span><span>Grafana</span><span>Ansible</span>
+      </div>
+    </section>
+
+    <section class="plate">
+      <h2>$ ./connect.sh</h2>
+      <div class="contact">
+        <a href="mailto:dikshits409@gmail.com">✉ EMAIL</a>
+        <a href="https://www.linkedin.com/in/shubham-sharma-devops/" target="_blank" rel="noopener">💼 LINKEDIN</a>
+        <a href="https://github.com" target="_blank" rel="noopener">⚡ GITHUB</a>
+      </div>
+    </section>
+
+    <p class="foot">PROTOTYPE · CONCEPT C · LIQUID GENERATIVE &amp; KINETIC · SPRING CURSOR FOLLOW</p>
+  </main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canvas = document.getElementById('liquid');
+  var ctx = canvas.getContext('2d');
+  var W,H,DPR = Math.min(window.devicePixelRatio||1,2);
+  var blobs = [
+    {c:'25,240,200', x:.3,y:.4, r:.34, sx:.00018, sy:.00023, px:.3, py:.4},
+    {c:'122,92,255', x:.7,y:.3, r:.30, sx:.00021, sy:.00016, px:.7, py:.3},
+    {c:'255,94,168', x:.5,y:.7, r:.32, sx:.00015, sy:.00020, px:.5, py:.7}
+  ];
+  var t = 0, target = {x:.5,y:.5};
+  function resize(){ W=canvas.width=innerWidth*DPR; H=canvas.height=innerHeight*DPR;
+    canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px'; }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#05060a'; ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    for (var i=0;i<blobs.length;i++){
+      var b=blobs[i];
+      b.x = 0.5 + 0.32*Math.sin(t*b.sx*1000 + i*2) + (target.x-0.5)*0.25;
+      b.y = 0.5 + 0.32*Math.cos(t*b.sy*1000 + i*1.5) + (target.y-0.5)*0.25;
+      var cx=b.x*W, cy=b.y*H, rad=b.r*Math.min(W,H);
+      var g=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+      g.addColorStop(0,'rgba('+b.c+',0.55)');
+      g.addColorStop(1,'rgba('+b.c+',0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over';
+    if(!reduce){ t+=0.016; requestAnimationFrame(draw); }
+  }
+  window.addEventListener('mousemove',function(e){ target.x=e.clientX/innerWidth; target.y=e.clientY/innerHeight; });
+  window.addEventListener('resize',resize);
+  resize(); draw();
+
+  // Spring cursor-follow on glass plates
+  if(!reduce){
+    var plates = [].slice.call(document.querySelectorAll('.plate'));
+    var mx=0,my=0;
+    window.addEventListener('mousemove',function(e){ mx=e.clientX; my=e.clientY; });
+    (function springs(){
+      plates.forEach(function(p){
+        var r=p.getBoundingClientRect();
+        var dx=(mx-(r.left+r.width/2))/r.width;
+        var dy=(my-(r.top+r.height/2))/r.height;
+        var dist=Math.hypot(dx,dy);
+        if(dist<1.1){
+          p.style.transform='translate('+(dx*10).toFixed(2)+'px,'+(dy*10).toFixed(2)+'px)';
+        } else {
+          p.style.transform='translate(0,0)';
+        }
+      });
+      requestAnimationFrame(springs);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
