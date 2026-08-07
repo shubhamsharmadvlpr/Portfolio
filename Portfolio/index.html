@@ -59,8 +59,6 @@
   .topbar nav{display:flex;gap:16px;margin-left:auto}
   .topbar nav a{font-family:var(--mono);font-size:12px;letter-spacing:.5px;color:var(--muted);transition:color .2s ease}
   .topbar nav a:hover{color:var(--accent)}
-  .topbar a.back{border:1px solid var(--accent);padding:5px 11px;color:var(--accent);transition:all .2s ease;font-family:var(--mono);font-size:12px}
-  .topbar a.back:hover{background:var(--accent);color:#06122a}
   @media(max-width:720px){.topbar nav{display:none}}
 
   .wrap{position:relative;z-index:10;max-width:1080px;margin:0 auto;padding:104px 22px 130px}
@@ -135,20 +133,6 @@
     border-top:var(--line);padding-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
   .foot a{color:var(--accent)}
 
-  /* ---- Bottom "Designs" dock ---- */
-  .designs-dock{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:300;
-    display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
-    background:rgba(10,16,48,.72);border:1px solid var(--line);backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);box-shadow:0 10px 36px rgba(0,0,0,.5),0 0 18px rgba(60,232,255,.18);
-    font-family:var(--mono)}
-  .designs-dock .lbl{color:var(--muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:0 4px}
-  .designs-dock a{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;
-    border:1px solid transparent;color:var(--muted);text-decoration:none;font-size:12px;font-weight:700;transition:all .2s ease}
-  .designs-dock a:hover{color:var(--fg);border-color:rgba(60,232,255,.4);transform:translateY(-2px)}
-  .designs-dock a.active{color:#06122a;background:var(--accent);border-color:var(--accent)}
-  .designs-dock a.all{width:auto;padding:0 12px;border-radius:999px}
-  @media(max-width:560px){.designs-dock .lbl{display:none}.designs-dock{bottom:12px;gap:5px;padding:6px 10px}.designs-dock a{width:28px;height:28px}}
-
   /* reveal-on-scroll (reduced-motion safe) */
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
   .reveal.in{opacity:1;transform:none}
@@ -174,7 +158,6 @@
       <a href="#impact">Impact</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="back" href="../concepts/index.html">DESIGNS ↗</a>
   </header>
 
   <main class="wrap">
@@ -292,21 +275,11 @@
       </div>
       <div class="foot">
         <span>© 2025 Shubham Sharma · Canvas-Driven Spatial concept</span>
-        <a href="../concepts/index.html">Explore all design concepts ↗</a>
       </div>
     </section>
   </main>
 
-  <!-- Bottom "Designs" switcher -->
-  <nav class="designs-dock" aria-label="Switch design concept">
-    <span class="lbl">Designs</span>
-    <a href="../concepts/concept-a-brutalist.html" title="Concept A — Neo-Brutalist">A</a>
-    <a href="../concepts/concept-b-spatial.html" class="active" title="Concept B — Spatial (this design)" aria-current="true">B</a>
-    <a href="../concepts/concept-c-liquid.html" title="Concept C — Liquid Kinetic">C</a>
-    <a href="../concepts/concept-d-hud.html" title="Concept D — HUD / CLI">D</a>
-    <a href="../concepts/concept-e-bento.html" title="Concept E — Bento Grid">E</a>
-    <a class="all" href="../concepts/index.html" title="All concepts">All ↗</a>
-  </nav>
+
 
 <script>
 (function(){
